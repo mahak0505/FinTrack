@@ -39,3 +39,13 @@ create table goals(
     current_amount int not null,
     deadline date
 )
+
+-- Budget warnings table
+CREATE TABLE IF NOT EXISTS budget_warnings (
+    warning_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    category VARCHAR(30),
+    spent REAL,
+    budget REAL,
+    warning_date DATE
+);
