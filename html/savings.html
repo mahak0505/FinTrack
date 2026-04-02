@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Savings — Finly</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="dashboard.html" class="tb-logo"><div class="logo-icon"><svg viewBox="0 0 22 22" fill="none" style="width:17px;height:17px;"><rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/><rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/><rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/><path d="M14 10 L18 6 M18 6 L15.5 6 M18 6 L18 8.5" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="logo-name">fin<span>ly</span></span></a>
+  <div class="tb-right">
+    <div class="tb-notif" onclick="document.getElementById('notifDropdown').classList.toggle('active'); event.stopPropagation();">🔔<div class="notif-badge"></div><div class="dropdown" id="notifDropdown" onclick="event.stopPropagation()"></div></div>
+    <a href="profile.html" class="tb-av" style="text-decoration:none; color:inherit;">AZ</a>
+  </div>
+</div>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sb-profile">
+      <div class="sb-av">AZ</div><div><div class="sb-name">Ansh Zamde</div><div class="sb-college">IET DAVV · Address</div></div>
+    </div>
+    <div class="sb-section">Main</div>
+    <a href="dashboard.html" class="sb-item"><span class="sb-item-ico">📊</span> Dashboard</a>
+    <a href="expenses.html" class="sb-item"><span class="sb-item-ico">💳</span> Expenses</a>
+    <a href="budget-goals.html" class="sb-item"><span class="sb-item-ico">🎯</span> Budget Goals</a>
+    <a href="savings.html" class="sb-item active"><span class="sb-item-ico">💰</span> Savings</a>
+    <div class="sb-section">Intelligence</div>
+    <a href="ai-advisor.html" class="sb-item"><span class="sb-item-ico">🤖</span> AI Advisor <span class="sb-badge">NEW</span></a>
+    <a href="analytics.html" class="sb-item"><span class="sb-item-ico">📈</span> Analytics</a>
+    <a href="insights.html" class="sb-item"><span class="sb-item-ico">💡</span> Insights</a>
+    <div class="sb-section">Account</div>
+    <a href="settings.html" class="sb-item"><span class="sb-item-ico">⚙️</span> Settings</a>
+    <a href="help.html" class="sb-item"><span class="sb-item-ico">❓</span> Help</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-hdr">
+      <div><div class="pg-title">Savings Goals 💰</div><div class="pg-sub">Track your progress toward big purchases</div></div>
+      <button class="btn-primary" style="width:auto; padding: 8px 16px;" onclick="openModal('newGoalModal')">+ New Goal</button>
+    </div>
+    
+    <div class="goal-list" id="goalsCont" style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;"></div>
+  </main>
+</div>
+
+<!-- Modals -->
+<div class="modal-overlay" id="newGoalModal" onclick="closeModals()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-hdr"><div class="modal-title">New Savings Goal</div><button class="modal-close" onclick="closeModals()">×</button></div>
+    <div class="frm-grp"><label class="frm-lbl">Goal Name</label><input type="text" class="frm-inp" id="gn"></div>
+    <div class="frm-grp"><label class="frm-lbl">Target Amount</label><input type="number" class="frm-inp" id="gt"></div>
+    <button class="btn-primary" onclick="saveNewG()">Create</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addFundModal" onclick="closeModals()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-hdr"><div class="modal-title">Add Funds to Goal</div><button class="modal-close" onclick="closeModals()">×</button></div>
+    <input type="hidden" id="fundId">
+    <div class="frm-grp"><label class="frm-lbl">Amount to add (₹)</label><input type="number" class="frm-inp" id="fundAmt"></div>
+    <button class="btn-primary" onclick="processFund()">Add Funds</button>
+  </div>
+</div>
+
+<script src="js/store.js"></script>
+<script>
+function renderGoals() {
+  const goals = Store.get('goals');
+  const cont = document.getElementById('goalsCont');
+  let html = '';
+  goals.forEach(g => {
+    const pct = Math.min(100, Math.round((g.current / g.target) * 100));
+    html += `
+    <div class="chart-card">
+      <div class="goal-hdr"><span class="goal-name" style="font-size:1.1rem">${g.name}</span><span class="goal-pct" style="font-size:1.2rem; color:${g.colors[0]}">${pct}%</span></div>
+      <div class="goal-bar-bg" style="height:12px; margin: 15px 0;"><div class="goal-bar-fill" style="width:${pct}%;background:linear-gradient(135deg,${g.colors[0]},${g.colors[1]});"></div></div>
+      <div class="goal-meta" style="font-size:.85rem; margin-bottom: 20px;"><span><strong style="color:var(--white)">₹${g.current}</strong> saved</span><span><strong style="color:var(--white)">₹${g.target}</strong> target</span></div>
+      <button class="btn-primary" style="background:var(--white-08);" onclick="openFundModal('${g.id}')">Add Funds +</button>
+    </div>`;
+  });
+  cont.innerHTML = html;
+}
+
+function saveNewG() {
+  const n = document.getElementById('gn').value;
+  const t = document.getElementById('gt').value;
+  if(n && t) { Store.addGoal(n, t); closeModals(); renderGoals(); }
+}
+
+function openFundModal(id) {
+  document.getElementById('fundId').value = id;
+  document.getElementById('fundAmt').value = '';
+  openModal('addFundModal');
+}
+
+function processFund() {
+  const id = document.getElementById('fundId').value;
+  const amt = parseFloat(document.getElementById('fundAmt').value);
+  if(!amt) return;
+  const goals = Store.get('goals');
+  const goal = goals.find(g => g.id === id);
+  if(goal) {
+    goal.current += amt;
+    Store.set('goals', goals);
+    closeModals();
+    renderGoals();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderGoals);
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Goals — Finly</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="dashboard.html" class="tb-logo"><div class="logo-icon"><svg viewBox="0 0 22 22" fill="none" style="width:17px;height:17px;"><rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/><rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/><rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/><path d="M14 10 L18 6 M18 6 L15.5 6 M18 6 L18 8.5" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="logo-name">fin<span>ly</span></span></a>
+  <div class="tb-right">
+    <div class="tb-notif" onclick="document.getElementById('notifDropdown').classList.toggle('active'); event.stopPropagation();">🔔<div class="notif-badge"></div><div class="dropdown" id="notifDropdown" onclick="event.stopPropagation()"></div></div>
+    <a href="profile.html" class="tb-av" style="text-decoration:none; color:inherit;">AZ</a>
+  </div>
+</div>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sb-profile">
+      <div class="sb-av">AZ</div><div><div class="sb-name">Ansh Zamde</div><div class="sb-college">IET DAVV · Address</div></div>
+    </div>
+    <div class="sb-section">Main</div>
+    <a href="dashboard.html" class="sb-item"><span class="sb-item-ico">📊</span> Dashboard</a>
+    <a href="expenses.html" class="sb-item"><span class="sb-item-ico">💳</span> Expenses</a>
+    <a href="budget-goals.html" class="sb-item active"><span class="sb-item-ico">🎯</span> Budget Goals</a>
+    <a href="savings.html" class="sb-item"><span class="sb-item-ico">💰</span> Savings</a>
+    <div class="sb-section">Intelligence</div>
+    <a href="ai-advisor.html" class="sb-item"><span class="sb-item-ico">🤖</span> AI Advisor <span class="sb-badge">NEW</span></a>
+    <a href="analytics.html" class="sb-item"><span class="sb-item-ico">📈</span> Analytics</a>
+    <a href="insights.html" class="sb-item"><span class="sb-item-ico">💡</span> Insights</a>
+    <div class="sb-section">Account</div>
+    <a href="settings.html" class="sb-item"><span class="sb-item-ico">⚙️</span> Settings</a>
+    <a href="help.html" class="sb-item"><span class="sb-item-ico">❓</span> Help</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-hdr">
+      <div><div class="pg-title">Budget Limits 🎯</div><div class="pg-sub">Manage your category allocations</div></div>
+    </div>
+    
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+      <div>
+        <div class="chart-card">
+          <div class="chart-hdr"><span class="chart-title">Current Spending against Limits</span></div>
+          <div id="budgetBars" style="display:flex; flex-direction:column; gap:1.5rem;"></div>
+        </div>
+      </div>
+      
+      <div class="quick-add">
+        <div class="qa-title">Update Limit</div>
+        <div class="frm-grp">
+          <label class="frm-lbl">Category</label>
+          <select class="frm-inp" id="catUpd" style="color:var(--blue-deep)">
+            <option>Food</option><option>Travel</option><option>Books</option><option>Accommodation</option><option>Health</option><option>Fun</option><option>Other</option>
+          </select>
+        </div>
+        <div class="frm-grp">
+          <label class="frm-lbl">New Limit (₹)</label>
+          <input type="number" class="frm-inp" id="limitUpd" placeholder="e.g. 5000">
+        </div>
+        <button class="btn-primary" onclick="updateLimit()">Save Limit</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/store.js"></script>
+<script>
+function renderBudgets() {
+  const buds = Store.get('budgets');
+  const exps = Store.get('expenses');
+  
+  const catTotals = {};
+  exps.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + e.amt; });
+  
+  const cont = document.getElementById('budgetBars');
+  let html = '';
+  
+  Object.keys(buds).forEach(cat => {
+    const limit = buds[cat];
+    const spent = catTotals[cat] || 0;
+    const pct = limit > 0 ? Math.min(100, Math.round((spent / limit) * 100)) : 0;
+    
+    let color = 'var(--blue-sky)';
+    if(pct > 80) color = 'var(--warn)';
+    if(pct >= 100) color = 'var(--danger)';
+    
+    html += `
+      <div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:.85rem;">
+          <strong style="color:var(--white)">${cat}</strong>
+          <span style="color:var(--text-sub)">₹${spent} / ₹${limit}</span>
+        </div>
+        <div style="height:8px; background:var(--white-08); border-radius:10px; overflow:hidden;">
+          <div style="height:100%; width:${pct}%; background:${color}; border-radius:10px;"></div>
+        </div>
+      </div>
+    `;
+  });
+  cont.innerHTML = html;
+}
+
+function updateLimit() {
+  const cat = document.getElementById('catUpd').value;
+  const val = document.getElementById('limitUpd').value;
+  if(val) {
+    Store.updateBudget(cat, val);
+    renderBudgets();
+    document.getElementById('limitUpd').value = '';
+    
+    const btn = document.querySelector('.btn-primary');
+    btn.textContent = 'Saved ✓';
+    setTimeout(()=>btn.textContent = 'Save Limit', 2000);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderBudgets);
+</script>
+</body>
+</html>
