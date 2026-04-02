@@ -1,78 +1,132 @@
+# Finly 💰
 
-# 💰 Finly – Smart Money Management System
+### AI-Powered Personal Finance Tracker for Students
 
-## 📌 Project Overview
+Finly is a web-based personal finance management application built for college students. It helps track expenses, manage budgets, set savings goals, and monitor income — all in one clean dashboard.
 
-Finly is a Personal Finance Management and Expense Analysis System developed using Python (Flask) and MySQL.
+> Built as a DBMS Minor Project | IET DAVV | 2025-26
 
-The system allows users to record income and expenses, analyze monthly spending, and receive smart financial insights.
+---
+
+## 👥 Team
+
+| Name           | Role                     |
+| -------------- | ------------------------ |
+| Disha Lowanshi | Frontend & Design        |
+| Mahak Bansal   | Backend (Python + Flask) |
+| Ansh Zamde     | Database (SQLite)        |
 
 ---
 
 ## 🚀 Features
 
-- Add Income & Expense Transactions
-- Categorize Spending (Food, Travel, Bills, Shopping, etc.)
-- Monthly Financial Summary
-- Automatic Savings Calculation
-- Category-wise Expense Analysis
-- Smart Budget Suggestions
-- Interactive Charts & Dashboard
-- Clean and User-Friendly Interface
+- User authentication (login & register)
+- Expense tracking with categories
+- Monthly budget limits per category
+- Income tracking
+- Savings goals with progress tracking
+- Budget vs actual spending view
+- AI tips on spending patterns
+- Analytics dashboard with charts
 
 ---
 
 ## 🛠️ Tech Stack
 
-- Backend: Python (Flask)
-- Database: MySQL
-- Frontend: HTML, CSS, Bootstrap
-- Charts: Chart.js
-- Version Control: Git & GitHub
+| Layer    | Technology            |
+| -------- | --------------------- |
+| Frontend | HTML, CSS, JavaScript |
+| Backend  | Python, Flask         |
+| Database | SQLite                |
+| Charts   | Chart.js              |
 
 ---
 
-## 📊 System Modules
+## 🗄️ Database Design
 
-1. User Management
-2. Transaction Management
-3. Category Management
-4. Expense Analysis
-5. Dashboard & Reporting
+5 tables — normalized to 3NF with foreign key constraints.
 
----
+- `users` — stores registered users
+- `expenses` — tracks all expense entries per user
+- `income` — tracks income entries per user
+- `budgets` — monthly budget limits per category per user
+- `goals` — savings goals with target and current amount
 
-## 🧮 Calculation Logic
+### ER Diagram
 
-- Savings = Total Income – Total Expense
-- Category Warning if spending > 30% of total expenses
-- Monthly summary using SQL aggregation functions
+(![ER Diagram](db/er-diagram/Untitled.png))
 
-## 🎯 Objective
+### Key DB Features
 
-To help users monitor financial activities, analyze spending behavior, and promote smart financial planning.
-
----
-
-## 👥 Team Members
-
-- Member 1 – Backend & Database
-- Member 2 – Frontend & UI
-- Member 3 – Analytics & Documentation
+- Foreign key constraints with referential integrity
+- `monthly_summary` VIEW — joins budgets and expenses to show spent vs remaining per category
+- Trigger — blocks expense insert if it exceeds monthly budget for that category
+- Core queries for dashboard, analytics, and budget tracking
 
 ---
 
-## 📌 Future Enhancements
+## 📁 Project Structure
 
-- AI-based expense prediction
-- Export reports to PDF
-- Mobile application version
-- Cloud deployment
+```
+Finly/
+├── db/
+│   ├── schema.sql        # CREATE TABLE statements
+│   ├── seed.sql          # Sample data
+│   ├── queries.sql       # Core SQL queries
+│   ├── view.sql          # monthly_summary VIEW
+│   ├── trigger.sql       # Budget check trigger
+│   └── er-diagram.png    # ER diagram
+├── html/                 # All frontend pages
+├── css/                  # Shared styles
+├── js/                   # JavaScript files
+└── README.md
+```
 
 ---
 
-## 📖 Academic Purpose
+## ⚙️ Setup Instructions
 
-This project demonstrates practical implementation of Database Management System concepts and backend integration using Python.
+**1. Clone the repo**
+
+```
+git clone https://github.com/mahak0505/Finly.git
+cd Finly
+```
+
+**2. Set up the database**
+
+```
+cd db
+sqlite3 finly.db < schema.sql
+sqlite3 finly.db < seed.sql
+```
+
+**3. Install backend dependencies**
+
+```
+pip install flask
+```
+
+**4. Run the app**
+
+```
+python app.py
+```
+
+**5. Open in browser**
+
+```
+http://localhost:5000
+```
 
 ---
+
+## 📸 Screenshots
+
+_Coming soon_
+
+---
+
+## 📄 License
+
+This project is for educational purposes only.
