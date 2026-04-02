@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Finly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="finly-landing.html" class="tb-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 22 22" fill="none" style="width:17px;height:17px;">
+        <rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/>
+        <rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/>
+        <rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/>
+        <path d="M14 10 L18 6 M18 6 L15.5 6 M18 6 L18 8.5" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="logo-name">fin<span>ly</span></span>
+  </a>
+  <div class="tb-right">
+    <div class="tb-notif" onclick="document.getElementById('notifDropdown').classList.toggle('active'); event.stopPropagation();">
+      🔔<div class="notif-badge"></div>
+      <div class="dropdown" id="notifDropdown" onclick="event.stopPropagation()"></div>
+    </div>
+    <a href="profile.html" class="tb-av" style="text-decoration:none; color:inherit;">AZ</a>
+  </div>
+</div>
+
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-profile">
+      <div class="sb-av">AZ</div>
+      <div><div class="sb-name">Ansh Zamde</div><div class="sb-college">IET DAVV · 2nd Year</div></div>
+    </div>
+    <div class="sb-section">Main</div>
+    <a href="dashboard.html" class="sb-item active"><span class="sb-item-ico">📊</span> Dashboard</a>
+    <a href="expenses.html" class="sb-item"><span class="sb-item-ico">💳</span> Expenses</a>
+    <a href="budget-goals.html" class="sb-item"><span class="sb-item-ico">🎯</span> Budget Goals</a>
+    <a href="savings.html" class="sb-item"><span class="sb-item-ico">💰</span> Savings</a>
+    <div class="sb-section">Intelligence</div>
+    <a href="ai-advisor.html" class="sb-item"><span class="sb-item-ico">🤖</span> AI Advisor <span class="sb-badge">NEW</span></a>
+    <a href="analytics.html" class="sb-item"><span class="sb-item-ico">📈</span> Analytics</a>
+    <a href="insights.html" class="sb-item"><span class="sb-item-ico">💡</span> Insights</a>
+    <div class="sb-section">Account</div>
+    <a href="settings.html" class="sb-item"><span class="sb-item-ico">⚙️</span> Settings</a>
+    <a href="help.html" class="sb-item"><span class="sb-item-ico">❓</span> Help</a>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <div class="page-hdr">
+      <div>
+        <div class="pg-title">Good morning, Ansh 👋</div>
+        <div class="pg-sub">Here's your financial overview for this month</div>
+      </div>
+      <div class="pg-date" id="currentDate">March 30, 2026</div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stat-row">
+      <div class="stat-card highlight">
+        <div class="stat-lbl">Spent This Month</div>
+        <div class="stat-val" id="stat-spent">₹0</div>
+        <div class="stat-delta down">↑ 12% vs last month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Total Savings</div>
+        <div class="stat-val" id="stat-saving">₹0</div>
+        <div class="stat-delta up">↑ ₹400 more than last month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Budget Remaining</div>
+        <div class="stat-val" id="stat-remaining">₹0</div>
+        <div class="stat-delta wrn">⚠ 8 days left in month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Daily Average</div>
+        <div class="stat-val" id="stat-avg">₹0</div>
+        <div class="stat-delta up">↓ ₹18 vs last month</div>
+      </div>
+    </div>
+
+    <!-- AI Tip -->
+    <div class="ai-tip">
+      <div class="ai-tip-ico">🤖</div>
+      <div class="ai-tip-text">Your <strong>food expenses</strong> are 34% above average this week. Cooking in hostel 3 days could save ₹600 before month-end.</div>
+      <div class="ai-badge">AI TIP</div>
+      <button class="ai-tip-btn" onclick="openModal('limitModal')">Set Limit →</button>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-row">
+      <!-- Spending trend -->
+      <div class="chart-card">
+        <div class="chart-hdr"><span class="chart-title">Spending Trend</span><span class="chart-period">Last 30 days</span></div>
+        <svg class="sparkline" viewBox="0 0 400 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3B82F6" stop-opacity=".3"/><stop offset="100%" stop-color="#3B82F6" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0 62 C15 62 22 44 40 48 C58 52 66 28 90 30 C114 32 124 54 150 50 C176 46 186 18 210 22 C234 26 244 46 268 40 C292 34 302 54 326 48 C350 42 368 58 400 50 L400 80 L0 80 Z" fill="url(#sg)"/>
+          <path d="M0 62 C15 62 22 44 40 48 C58 52 66 28 90 30 C114 32 124 54 150 50 C176 46 186 18 210 22 C234 26 244 46 268 40 C292 34 302 54 326 48 C350 42 368 58 400 50" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="210" cy="22" r="4" fill="#60A5FA"/>
+          <circle cx="400" cy="50" r="4" fill="#3B82F6"/>
+        </svg>
+        <div style="display:flex;justify-content:space-between;margin-top:.5rem;">
+          <span style="font-size:.6rem;color:var(--text-muted);">1 Mar</span>
+          <span style="font-size:.6rem;color:var(--text-muted);">10 Mar</span>
+          <span style="font-size:.6rem;color:var(--text-muted);">20 Mar</span>
+          <span style="font-size:.6rem;color:var(--text-muted);">Today</span>
+        </div>
+      </div>
+
+      <!-- Category bars -->
+      <div class="chart-card">
+        <div class="chart-hdr"><span class="chart-title">By Category</span><span class="chart-period">This month</span></div>
+        <div class="bar-chart" id="catBars"></div>
+      </div>
+
+      <!-- Donut -->
+      <div class="chart-card">
+        <div class="chart-hdr"><span class="chart-title">Budget Split</span></div>
+        <div class="donut-wrap">
+          <svg width="90" height="90" viewBox="0 0 90 90">
+            <circle cx="45" cy="45" r="32" fill="none" stroke="rgba(59,130,246,.1)" stroke-width="14"/>
+            <circle cx="45" cy="45" r="32" fill="none" stroke="#3B82F6" stroke-width="14" stroke-dasharray="80 121" stroke-dashoffset="-10" stroke-linecap="round"/>
+            <circle cx="45" cy="45" r="32" fill="none" stroke="#10B981" stroke-width="14" stroke-dasharray="32 121" stroke-dashoffset="-92" stroke-linecap="round"/>
+            <circle cx="45" cy="45" r="32" fill="none" stroke="#F59E0B" stroke-width="14" stroke-dasharray="9 121" stroke-dashoffset="-125" stroke-linecap="round"/>
+          </svg>
+          <div class="donut-legend">
+            <div class="donut-leg-item"><div class="donut-leg-name"><div class="donut-leg-dot" style="background:#3B82F6;"></div>Food</div><div class="donut-leg-val">₹2,180</div></div>
+            <div class="donut-leg-item"><div class="donut-leg-name"><div class="donut-leg-dot" style="background:#10B981;"></div>Travel</div><div class="donut-leg-val">₹860</div></div>
+            <div class="donut-leg-item"><div class="donut-leg-name"><div class="donut-leg-dot" style="background:#F59E0B;"></div>Other</div><div class="donut-leg-val">₹480</div></div>
+            <div class="donut-leg-item"><div class="donut-leg-name"><div class="donut-leg-dot" style="background:#A78BFA;"></div>Books</div><div class="donut-leg-val">₹360</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="bottom-row">
+      <!-- Recent transactions -->
+      <div class="chart-card">
+        <div class="chart-hdr"><span class="chart-title">Recent Transactions</span><a href="expenses.html" class="chart-period" style="text-decoration:none;color:var(--blue-sky);">View all →</a></div>
+        <div class="txn-list" id="txnList">
+          <!-- Transactions generated dynamically -->
+        </div>
+      </div>
+
+      <!-- Savings goals + quick add -->
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div class="chart-card">
+          <div class="chart-hdr"><span class="chart-title">Savings Goals</span><span class="chart-period" style="cursor:pointer;color:var(--blue-sky);" onclick="openModal('goalModal')">Add goal +</span></div>
+          <div class="goal-list" id="dashGoals">
+            <!-- Goals generated dynamically -->
+          </div>
+        </div>
+        <div class="quick-add">
+          <div class="qa-title">⚡ Quick Add Expense</div>
+          <div class="qa-cats">
+            <div class="qa-cat sel" onclick="selectCat(this)">🍔 Food</div>
+            <div class="qa-cat" onclick="selectCat(this)">🚌 Travel</div>
+            <div class="qa-cat" onclick="selectCat(this)">📚 Books</div>
+            <div class="qa-cat" onclick="selectCat(this)">🎮 Fun</div>
+            <div class="qa-cat" onclick="selectCat(this)">🏥 Health</div>
+          </div>
+          <div class="qa-row">
+            <input class="qa-inp" type="number" placeholder="₹ Amount" id="qaAmt">
+            <input class="qa-inp" type="text" placeholder="Note (optional)" id="qaNote" style="flex:1.5">
+            <button class="qa-btn" onclick="addExpense()">Add →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="limitModal" onclick="closeModals()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <div class="modal-title">Set Budget Limit</div>
+      <button class="modal-close" onclick="closeModals()">×</button>
+    </div>
+    <div class="frm-grp">
+      <label class="frm-lbl">Category</label>
+      <select class="frm-inp" id="limitCat" style="color:var(--blue-deep)">
+        <option>Food</option><option>Travel</option><option>Books</option><option>Accommodation</option><option>Other</option>
+      </select>
+    </div>
+    <div class="frm-grp">
+      <label class="frm-lbl">Monthly Limit (₹)</label>
+      <input type="number" class="frm-inp" id="limitAmt" placeholder="e.g. 2000">
+    </div>
+    <button class="btn-primary" onclick="saveLimit()">Save Limit</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="goalModal" onclick="closeModals()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <div class="modal-title">Add Savings Goal</div>
+      <button class="modal-close" onclick="closeModals()">×</button>
+    </div>
+    <div class="frm-grp">
+      <label class="frm-lbl">Goal Name</label>
+      <input type="text" class="frm-inp" id="goalName" placeholder="e.g. New Phone">
+    </div>
+    <div class="frm-grp">
+      <label class="frm-lbl">Target Amount (₹)</label>
+      <input type="number" class="frm-inp" id="goalTarget" placeholder="e.g. 50000">
+    </div>
+    <button class="btn-primary" onclick="saveNewGoal()">Create Goal</button>
+  </div>
+</div>
+
+<script src="js/store.js"></script>
+<script>
+// Date
+const d = new Date();
+document.getElementById('currentDate').textContent = d.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+
+// Load Stats
+function renderDashboard() {
+  const exps = Store.get('expenses');
+  const goals = Store.get('goals');
+  const buds = Store.get('budgets');
+  
+  // Calculate stats
+  // Group only this month explicitly or just sum all for demo. We'll sum all for simple demo, but in real life we'd filter.
+  const spentThisMonth = exps.reduce((acc, curr) => acc + curr.amt, 0);
+  const totalSavings = goals.reduce((acc, curr) => acc + curr.current, 0);
+  
+  const totalBudgets = Object.values(buds).reduce((a,b)=>a+b,0);
+  const remaining = totalBudgets - spentThisMonth;
+  const avg = Math.round(spentThisMonth / (d.getDate() || 1));
+
+  document.getElementById('stat-spent').textContent = Store.formatMoney(spentThisMonth);
+  document.getElementById('stat-saving').textContent = Store.formatMoney(totalSavings);
+  document.getElementById('stat-remaining').textContent = Store.formatMoney(remaining);
+  document.getElementById('stat-avg').textContent = Store.formatMoney(avg);
+
+  // Render Category Bars
+  const catTotals = {};
+  exps.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + e.amt; });
+  const barsEl = document.getElementById('catBars');
+  barsEl.innerHTML = '';
+  const colors = ['#3B82F6', '#10B981', '#F59E0B', '#A78BFA', '#F87171'];
+  Object.keys(catTotals).slice(0, 5).forEach((c, i) => {
+    const pct = spentThisMonth ? Math.min(100, (catTotals[c] / spentThisMonth) * 100) : 0;
+    const w = document.createElement('div');
+    w.className='bar-wrap';
+    w.innerHTML=`<div class="bar" style="height:${Math.max(10, pct)}%;background:${colors[i%5]};opacity:.8;"></div><span class="bar-label">${c}</span>`;
+    barsEl.appendChild(w);
+  });
+  if(Object.keys(catTotals).length === 0) barsEl.innerHTML = '<div class="no-data" style="margin:auto">No expenses yet</div>';
+
+  // Render Recent Transactions
+  const txnList = document.getElementById('txnList');
+  let txnHtml = '';
+  exps.slice(0, 5).forEach(e => {
+    let ico = '💸'; 
+    if(e.cat==='Food') ico='🍔'; if(e.cat==='Travel') ico='🚌'; if(e.cat==='Books') ico='📚'; if(e.cat==='Health') ico='🏥';
+    txnHtml += `<a href="expenses.html" class="txn-item">
+      <div class="txn-ico" style="background:rgba(255,255,255,.05);">${ico}</div>
+      <div style="flex:1"><div class="txn-name">${e.name}</div><div class="txn-cat">${e.cat}</div></div>
+      <div class="txn-amt down">-₹${e.amt}</div>
+      <div class="txn-date">${Store.formatDate(e.date)}</div>
+    </a>`;
+  });
+  txnList.innerHTML = txnHtml || '<div class="no-data">No recent transactions</div>';
+
+  // Render Goals
+  const goalList = document.getElementById('dashGoals');
+  let gHtml = '';
+  goals.slice(0,2).forEach(g => {
+    const pct = g.target > 0 ? Math.min(100, Math.round((g.current / g.target) * 100)) : 0;
+    gHtml += `<div class="goal-item">
+      <div class="goal-hdr"><span class="goal-name">${g.name}</span><span class="goal-pct" style="color:${g.colors[0]}">${pct}%</span></div>
+      <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:${pct}%;background:linear-gradient(135deg,${g.colors[0]},${g.colors[1]});"></div></div>
+      <div class="goal-meta"><span>₹${g.current} saved</span><span>₹${g.target} goal</span></div>
+    </div>`;
+  });
+  goalList.innerHTML = gHtml || '<div class="no-data">No goals yet</div>';
+}
+
+document.addEventListener('DOMContentLoaded', renderDashboard);
+
+function saveLimit() {
+  const cat = document.getElementById('limitCat').value;
+  const amt = document.getElementById('limitAmt').value;
+  if(!amt) return;
+  Store.updateBudget(cat, amt);
+  closeModals();
+  renderDashboard();
+}
+
+function saveNewGoal() {
+  const name = document.getElementById('goalName').value;
+  const trg = document.getElementById('goalTarget').value;
+  if(!name || !trg) return;
+  Store.addGoal(name, trg);
+  closeModals();
+  renderDashboard();
+}
+
+// Quick add cat select
+function selectCat(el){document.querySelectorAll('.qa-cat').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function addExpense(){
+  const amt=document.getElementById('qaAmt').value;
+  const note=document.getElementById('qaNote').value;
+  if(!amt)return;
+  const catText = document.querySelector('.qa-cat.sel')?.textContent.trim() || 'Other';
+  const cat = catText.includes(' ') ? catText.split(' ')[1] : catText;
+  Store.addExpense(note || 'Quick Add', cat, amt);
+  document.getElementById('qaAmt').value='';
+  document.getElementById('qaNote').value='';
+  
+  const btn = document.querySelector('.qa-btn');
+  btn.textContent = 'Added ✓';
+  btn.style.background = '#10B981';
+  setTimeout(() => { btn.textContent = 'Add →'; btn.style.background = 'var(--gradient-blue)'; }, 2000);
+  
+  renderDashboard();
+}
+</script>
+</body>
+</html>

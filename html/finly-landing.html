@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finly — AI Finance for Students</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&family=Sora:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --blue-deep:   #060D1A;
+  --blue-dark:   #0A1628;
+  --blue-mid:    #1A4DB3;
+  --blue-core:   #2563EB;
+  --blue-bright: #3B82F6;
+  --blue-sky:    #60A5FA;
+  --blue-light:  #93C5FD;
+  --blue-pale:   #DBEAFE;
+  --gradient-blue: linear-gradient(135deg, #2563EB, #3B82F6, #60A5FA);
+  --gradient-card: linear-gradient(135deg, #1E3A6E, #1A4DB3);
+  --white: #FFFFFF;
+  --white-90: rgba(255,255,255,0.9);
+  --white-70: rgba(255,255,255,0.7);
+  --white-40: rgba(255,255,255,0.4);
+  --white-15: rgba(255,255,255,0.15);
+  --white-08: rgba(255,255,255,0.08);
+  --white-04: rgba(255,255,255,0.04);
+  --text: #F0F6FF;
+  --text-sub: rgba(147,197,253,0.85);
+  --text-muted: rgba(147,197,253,0.5);
+  --border: rgba(96,165,250,0.2);
+  --border-subtle: rgba(96,165,250,0.1);
+  --ai-green: #10B981;
+  --warn: #F59E0B;
+  --shadow-blue: 0 20px 60px rgba(37,99,235,0.3);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body {
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--blue-deep);
+  color:var(--text);
+  overflow-x:hidden;
+  line-height:1.6;
+}
+
+body::before {
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(96,165,250,0.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(96,165,250,0.035) 1px,transparent 1px);
+  background-size:64px 64px;
+}
+
+.orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;}
+.orb-1{width:550px;height:550px;background:radial-gradient(circle,rgba(37,99,235,0.18),transparent 70%);top:-180px;right:-80px;animation:orbF 9s ease-in-out infinite;}
+.orb-2{width:420px;height:420px;background:radial-gradient(circle,rgba(59,130,246,0.1),transparent 70%);bottom:5%;left:-100px;animation:orbF 11s ease-in-out infinite reverse;}
+.orb-3{width:280px;height:280px;background:radial-gradient(circle,rgba(96,165,250,0.08),transparent 70%);top:45%;right:8%;animation:orbF 7s ease-in-out infinite;}
+@keyframes orbF{0%,100%{transform:translateY(0)}50%{transform:translateY(-28px)}}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  height:66px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;
+  background:rgba(6,13,26,0.82);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-subtle);
+  transition:background .3s;
+}
+
+/* LOGO — creative F with upward arrow indicating financial growth */
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-icon{
+  width:36px;height:36px;
+  background:var(--gradient-blue);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(37,99,235,.4);
+  position:relative;
+  overflow:hidden;
+}
+.logo-svg{width:22px;height:22px;}
+.logo-name{font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:700;color:var(--white);letter-spacing:-.03em;}
+.logo-name span{color:var(--blue-sky);}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
+.nav-links a{font-size:.83rem;font-weight:400;color:var(--text-sub);text-decoration:none;transition:color .2s;letter-spacing:.01em;}
+.nav-links a:hover{color:var(--white);}
+.nav-actions{display:flex;gap:.7rem;align-items:center;}
+.btn-ng{font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:500;color:var(--blue-light);background:none;border:1px solid var(--border);padding:8px 18px;border-radius:8px;cursor:pointer;transition:all .25s;}
+.btn-ng:hover{background:var(--white-08);border-color:var(--blue-bright);color:var(--white);}
+.btn-np{font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:600;color:var(--white);background:var(--gradient-blue);border:none;padding:9px 20px;border-radius:8px;cursor:pointer;transition:all .25s;box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-np:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(37,99,235,.5);}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 5% 60px;overflow:hidden;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(37,99,235,.14);border:1px solid rgba(96,165,250,.3);border-radius:100px;padding:6px 16px;font-size:.72rem;font-weight:500;color:var(--blue-light);letter-spacing:.04em;margin-bottom:2rem;animation:fadeUp .7s ease both;}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--ai-green);box-shadow:0 0 7px var(--ai-green);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero-h1{font-family:'Sora',sans-serif;font-size:clamp(2.6rem,6.5vw,5.2rem);font-weight:800;line-height:1.08;letter-spacing:-.04em;color:var(--white);max-width:800px;margin:0 auto 1.5rem;animation:fadeUp .7s .1s ease both;}
+.hero-h1 .hl{background:var(--gradient-blue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:1.02rem;font-weight:300;color:var(--text-sub);max-width:540px;line-height:1.85;margin:0 auto 2.8rem;animation:fadeUp .7s .2s ease both;}
+.hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s .3s ease both;}
+.btn-hero{font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;font-weight:600;color:var(--white);background:var(--gradient-blue);border:none;padding:14px 30px;border-radius:12px;cursor:pointer;transition:all .25s;box-shadow:var(--shadow-blue);display:flex;align-items:center;gap:8px;}
+.btn-hero:hover{transform:translateY(-2px);box-shadow:0 25px 70px rgba(37,99,235,.45);}
+.btn-ghost-hero{font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;font-weight:500;color:var(--blue-light);background:var(--white-08);border:1px solid var(--border);padding:14px 30px;border-radius:12px;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:8px;}
+.btn-ghost-hero:hover{background:var(--white-15);color:var(--white);}
+.hero-note{margin-top:1.2rem;font-size:.72rem;font-weight:400;color:var(--text-muted);animation:fadeUp .7s .4s ease both;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* TRUST */
+.trust{position:relative;z-index:1;padding:2.5rem 5%;text-align:center;border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);}
+.trust-lbl{font-size:.7rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.8rem;}
+.trust-list{display:flex;align-items:center;justify-content:center;gap:3.5rem;flex-wrap:wrap;}
+.trust-i{font-family:'Sora',sans-serif;font-size:.9rem;font-weight:700;color:var(--white-40);letter-spacing:-.02em;transition:color .3s;}
+.trust-i:hover{color:var(--white-70);}
+
+/* SECTION COMMON */
+.section{position:relative;z-index:1;padding:6rem 5%;}
+.s-lbl{font-size:.7rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--blue-bright);text-align:center;margin-bottom:.7rem;}
+.s-title{font-family:'Sora',sans-serif;font-size:clamp(1.75rem,3.5vw,2.9rem);font-weight:700;letter-spacing:-.03em;text-align:center;color:var(--white);max-width:580px;margin:0 auto .9rem;line-height:1.2;}
+.s-title .hl{background:var(--gradient-blue);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.s-sub{font-size:.87rem;font-weight:300;color:var(--text-sub);text-align:center;max-width:480px;margin:0 auto 4rem;line-height:1.85;}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;max-width:1080px;margin:0 auto;background:var(--border-subtle);border-radius:18px;overflow:hidden;}
+.feat-card{background:var(--blue-deep);padding:2.3rem 1.9rem;transition:background .3s;position:relative;overflow:hidden;}
+.feat-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(37,99,235,.07),transparent 55%);opacity:0;transition:opacity .4s;}
+.feat-card:hover{background:rgba(10,22,40,.95);}
+.feat-card:hover::after{opacity:1;}
+.feat-icon{width:46px;height:46px;background:rgba(37,99,235,.14);border:1px solid rgba(96,165,250,.22);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:1.2rem;}
+.feat-title{font-family:'Sora',sans-serif;font-size:.97rem;font-weight:600;color:var(--white);margin-bottom:.55rem;}
+.feat-desc{font-size:.8rem;font-weight:300;color:var(--text-sub);line-height:1.78;}
+.feat-tag{display:inline-block;margin-top:.9rem;padding:2px 10px;border-radius:100px;font-size:.62rem;font-weight:600;letter-spacing:.05em;background:rgba(37,99,235,.14);border:1px solid rgba(96,165,250,.2);color:var(--blue-light);}
+.feat-tag.ai{background:rgba(16,185,129,.09);border-color:rgba(16,185,129,.22);color:#6EE7B7;}
+
+/* AI SECTION */
+.ai-sec{position:relative;z-index:1;padding:6rem 5%;background:linear-gradient(135deg,rgba(10,22,40,.6),rgba(6,13,26,.8));border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);}
+.ai-layout{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;max-width:1080px;margin:0 auto;}
+.ai-text .s-title{text-align:left;margin-left:0;}
+.ai-text .s-lbl{text-align:left;}
+.ai-text .s-sub{text-align:left;margin-left:0;margin-bottom:2.2rem;}
+.ai-pts{display:flex;flex-direction:column;gap:1.1rem;}
+.ai-pt{display:flex;align-items:flex-start;gap:.9rem;padding:1.1rem;background:var(--white-04);border:1px solid var(--border-subtle);border-radius:12px;transition:all .3s;}
+.ai-pt:hover{background:rgba(37,99,235,.07);border-color:rgba(96,165,250,.2);transform:translateX(4px);}
+.ai-pt-ico{font-size:1.3rem;flex-shrink:0;margin-top:1px;}
+.ai-pt-ttl{font-size:.85rem;font-weight:600;color:var(--white);margin-bottom:2px;}
+.ai-pt-dsc{font-size:.76rem;font-weight:300;color:var(--text-sub);line-height:1.65;}
+
+/* CHAT MOCKUP */
+.chat-box{background:rgba(10,22,40,.92);border:1px solid var(--border);border-radius:18px;padding:1.4rem;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.chat-hdr{display:flex;align-items:center;gap:9px;padding-bottom:.9rem;border-bottom:1px solid var(--border-subtle);margin-bottom:1.1rem;}
+.chat-ico{width:34px;height:34px;background:var(--gradient-blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.85rem;}
+.chat-aname{font-size:.8rem;font-weight:600;color:var(--white);}
+.chat-stat{font-size:.65rem;color:var(--ai-green);display:flex;align-items:center;gap:4px;}
+.chat-dot{width:5px;height:5px;border-radius:50%;background:var(--ai-green);}
+.bbl{margin-bottom:.9rem;}
+.bbl-u{display:flex;justify-content:flex-end;}
+.bbl-u .bt{background:rgba(37,99,235,.28);border:1px solid rgba(96,165,250,.18);color:var(--white-90);}
+.bbl-a .bt{background:var(--white-04);border:1px solid var(--border-subtle);color:var(--text);}
+.bt{max-width:87%;border-radius:12px;padding:.65rem .9rem;font-size:.75rem;line-height:1.65;font-weight:300;}
+.bt strong{font-weight:600;color:var(--blue-light);}
+.chat-inp-row{display:flex;gap:7px;margin-top:.9rem;}
+.chat-inp{flex:1;background:var(--white-04);border:1px solid var(--border-subtle);border-radius:9px;padding:9px 12px;font-size:.72rem;color:var(--text-muted);font-family:'Plus Jakarta Sans',sans-serif;outline:none;}
+.chat-send{background:var(--gradient-blue);border:none;border-radius:9px;padding:9px 13px;font-size:.8rem;cursor:pointer;color:white;}
+
+/* HOW */
+.steps-wrap{display:flex;gap:0;max-width:860px;margin:0 auto;position:relative;}
+.steps-wrap::after{content:'';position:absolute;top:29px;left:14%;width:72%;height:1px;background:linear-gradient(90deg,transparent,var(--blue-mid),transparent);}
+.step-i{flex:1;text-align:center;padding:0 1.3rem;}
+.step-c{width:58px;height:58px;background:linear-gradient(135deg,rgba(10,22,40,1),rgba(26,77,179,.25));border:1px solid rgba(96,165,250,.28);border-radius:50%;margin:0 auto 1.4rem;display:flex;align-items:center;justify-content:center;font-size:1.2rem;position:relative;z-index:1;}
+.step-n{position:absolute;bottom:-6px;right:-6px;width:20px;height:20px;background:var(--blue-mid);border-radius:50%;font-family:'Sora',sans-serif;font-size:.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;color:white;}
+.step-ttl{font-family:'Sora',sans-serif;font-size:.95rem;font-weight:600;color:var(--white);margin-bottom:.6rem;}
+.step-dsc{font-size:.78rem;font-weight:300;color:var(--text-sub);line-height:1.75;}
+
+/* TESTIMONIALS — CENTER MODE SLIDER */
+.testi-section{position:relative;z-index:1;padding:6rem 0;background:linear-gradient(135deg,rgba(10,22,40,.4),transparent);border-top:1px solid var(--border-subtle);}
+.testi-section .s-lbl,.testi-section .s-title,.testi-section .s-sub{padding:0 5%;}
+.testi-slider-wrap{position:relative;overflow:hidden;width:100%;padding:2rem 0;}
+.testi-track{display:flex;gap:1.8rem;transition:transform .7s cubic-bezier(.4,0,.2,1);will-change:transform;padding:1rem 0;}
+.testi-card{
+  flex-shrink:0;
+  width:360px;
+  background:rgba(10,22,40,.8);
+  border:1px solid var(--border-subtle);
+  border-radius:18px;
+  padding:2rem;
+  transition:all .7s cubic-bezier(.4,0,.2,1);
+  transform:scale(.88);
+  opacity:.45;
+  filter:blur(2px);
+  position:relative;
+}
+.testi-card.active{
+  transform:scale(1);
+  opacity:1;
+  filter:blur(0);
+  border-color:rgba(96,165,250,.3);
+  background:rgba(10,22,40,.96);
+  box-shadow:0 20px 60px rgba(37,99,235,.18);
+}
+.testi-card.adjacent{
+  transform:scale(.93);
+  opacity:.65;
+  filter:blur(1px);
+}
+.testi-stars{font-size:.9rem;color:#FBBF24;letter-spacing:2px;margin-bottom:1rem;}
+.testi-txt{font-size:.82rem;font-weight:300;color:var(--text-sub);line-height:1.78;margin-bottom:1.4rem;font-style:italic;}
+.testi-auth{display:flex;align-items:center;gap:.8rem;}
+.testi-av{width:38px;height:38px;background:var(--gradient-blue);border-radius:10px;font-family:'Sora',sans-serif;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.testi-name{font-size:.82rem;font-weight:600;color:var(--white);}
+.testi-col{font-size:.7rem;color:var(--text-muted);}
+.testi-dots{display:flex;justify-content:center;gap:.5rem;margin-top:1.8rem;}
+.testi-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .4s;cursor:pointer;}
+.testi-dot.active{width:20px;background:var(--blue-bright);}
+
+/* CTA */
+.cta-sec{position:relative;z-index:1;padding:6rem 5%;text-align:center;}
+.cta-box{background:linear-gradient(135deg,rgba(10,22,40,.8),rgba(26,77,179,.15));border:1px solid rgba(96,165,250,.18);border-radius:24px;padding:4rem 3rem;max-width:700px;margin:0 auto;position:relative;overflow:hidden;}
+.cta-box::before{content:'';position:absolute;top:-60px;right:-60px;width:250px;height:250px;background:radial-gradient(circle,rgba(37,99,235,.15),transparent 70%);pointer-events:none;}
+.cta-box h2{font-family:'Sora',sans-serif;font-size:clamp(1.7rem,3.5vw,2.5rem);font-weight:800;letter-spacing:-.03em;color:var(--white);margin-bottom:1rem;line-height:1.15;}
+.cta-box p{font-size:.87rem;font-weight:300;color:var(--text-sub);line-height:1.85;max-width:500px;margin:0 auto 2.2rem;}
+.cta-acts{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+/* HELP CENTER BANNER */
+.help-banner{position:relative;z-index:1;padding:3rem 5%;border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);}
+.help-inner{max-width:1080px;margin:0 auto;background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(96,165,250,.04));border:1px solid rgba(96,165,250,.15);border-radius:20px;padding:2.5rem 3rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.help-left{display:flex;align-items:center;gap:1.4rem;}
+.help-icon-wrap{width:56px;height:56px;background:rgba(37,99,235,.15);border:1px solid rgba(96,165,250,.25);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+.help-title{font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:.3rem;}
+.help-sub{font-size:.8rem;font-weight:300;color:var(--text-sub);}
+.help-links{display:flex;gap:1rem;flex-wrap:wrap;}
+.help-link-pill{display:flex;align-items:center;gap:6px;background:var(--white-04);border:1px solid var(--border-subtle);border-radius:100px;padding:6px 14px;font-size:.75rem;font-weight:500;color:var(--text-sub);cursor:pointer;transition:all .2s;}
+.help-link-pill:hover{background:rgba(37,99,235,.1);border-color:rgba(96,165,250,.25);color:var(--white);}
+.btn-help{font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:600;color:var(--white);background:var(--gradient-blue);border:none;padding:11px 24px;border-radius:10px;cursor:pointer;transition:all .25s;box-shadow:0 4px 14px rgba(37,99,235,.3);white-space:nowrap;}
+.btn-help:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(37,99,235,.45);}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border-subtle);padding:3.5rem 5% 2rem;}
+.f-top{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:3rem;margin-bottom:2.5rem;}
+.f-brand-name{display:flex;align-items:center;gap:8px;font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:.7rem;}
+.f-brand-desc{font-size:.77rem;font-weight:300;color:var(--text-muted);line-height:1.75;max-width:240px;}
+.f-col-ttl{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.1rem;}
+.f-links{list-style:none;display:flex;flex-direction:column;gap:.6rem;}
+.f-links a{font-size:.8rem;font-weight:400;color:var(--text-sub);text-decoration:none;transition:color .2s;}
+.f-links a:hover{color:var(--white);}
+.f-btm{display:flex;justify-content:space-between;align-items:center;padding-top:1.5rem;border-top:1px solid var(--border-subtle);font-size:.72rem;color:var(--text-muted);}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-ov.open{opacity:1;pointer-events:all;}
+.modal-box{background:rgba(10,22,40,.97);border:1px solid var(--border);border-radius:20px;padding:2.5rem;width:100%;max-width:420px;position:relative;transform:translateY(20px);transition:transform .3s;}
+.modal-ov.open .modal-box{transform:none;}
+.modal-close{position:absolute;top:1rem;right:1rem;background:var(--white-08);border:none;width:30px;height:30px;border-radius:8px;color:var(--text-muted);cursor:pointer;font-size:.8rem;transition:all .2s;}
+.modal-close:hover{background:var(--white-15);color:var(--white);}
+.modal-logo-row{display:flex;align-items:center;gap:9px;margin-bottom:.4rem;}
+.modal-logo-ic{width:34px;height:34px;background:var(--gradient-blue);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.modal-logo-nm{font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
+.modal-sub{font-size:.77rem;font-weight:300;color:var(--text-muted);margin-bottom:1.5rem;}
+.tab-row{display:flex;background:var(--white-04);border-radius:10px;padding:3px;margin-bottom:1.4rem;}
+.m-tab{flex:1;padding:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:500;background:none;border:none;color:var(--text-muted);border-radius:8px;cursor:pointer;transition:all .2s;}
+.m-tab.active{background:var(--white-08);color:var(--white);font-weight:600;}
+.tab-panel{display:none;flex-direction:column;gap:1rem;}
+.tab-panel.active{display:flex;}
+.fg{display:flex;flex-direction:column;gap:.4rem;}
+.fl{font-size:.75rem;font-weight:500;color:var(--text-sub);}
+.fi{background:var(--white-04);border:1px solid var(--border-subtle);border-radius:9px;padding:10px 13px;font-size:.83rem;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border-color .2s;}
+.fi:focus{border-color:var(--blue-bright);}
+.fsub{background:var(--gradient-blue);border:none;border-radius:10px;padding:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:600;color:white;cursor:pointer;width:100%;margin-top:.3rem;transition:all .25s;box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.fsub:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(37,99,235,.5);}
+.for{text-align:center;font-size:.73rem;color:var(--text-muted);position:relative;margin:.3rem 0;}
+.ffoot{font-size:.75rem;color:var(--text-muted);text-align:center;}
+.ffoot a{color:var(--blue-light);cursor:pointer;text-decoration:none;}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:none;}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="finly-landing.html" class="nav-logo">
+    <!-- Creative F logo: letter F with upward trending arrow suggesting financial growth -->
+    <div class="logo-icon">
+      <svg class="logo-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- F letterform -->
+        <rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/>
+        <rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/>
+        <rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/>
+        <!-- Upward arrow (trend line) integrated at top-right -->
+        <path d="M14 10 L18 6 M18 6 L15.5 6 M18 6 L18 8.5" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="logo-name">fin<span>ly</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#ai">AI Advisor</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="about.html">About Us</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-ng" onclick="openModal('login')">Log In</button>
+    <button class="btn-np" onclick="openModal('signup')">Sign Up</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="badge-dot"></span> AI-Powered Student Finance</div>
+  <h1 class="hero-h1">Your money,<br><span class="hl">finally making sense</span></h1>
+  <p class="hero-sub">Finly tracks your spending, predicts your habits, and gives you an AI advisor built for hostel life — not spreadsheets.</p>
+  <div class="hero-actions">
+    <button class="btn-hero" onclick="openModal('signup')">🚀 Get Started</button>
+    <button class="btn-ghost-hero" onclick="openModal('login')">Already have an account</button>
+  </div>
+  <p class="hero-note">No credit card needed · Free for students</p>
+</section>
+
+<!-- TRUST -->
+<div class="trust">
+  <p class="trust-lbl">Trusted by students at</p>
+  <div class="trust-list">
+    <span class="trust-i">IIT Bombay</span>
+    <span class="trust-i">BITS Pilani</span>
+    <span class="trust-i">NIT Trichy</span>
+    <span class="trust-i">IET DAVV</span>
+    <span class="trust-i">VIT Vellore</span>
+    <span class="trust-i">DTU Delhi</span>
+    <span class="trust-i">SGSITS</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section reveal" id="features">
+  <p class="s-lbl">What You Get</p>
+  <h2 class="s-title">Built for <span class="hl">student life</span>, not adulting</h2>
+  <p class="s-sub">From mess fees to Swiggy binges — Finly understands the chaos of college finances.</p>
+  <div class="feat-grid">
+    <div class="feat-card"><div class="feat-icon">📊</div><h3 class="feat-title">Expense Tracking</h3><p class="feat-desc">Log in seconds. Auto-categorise into food, rent, travel, books, and fun. Know exactly where every rupee went.</p><span class="feat-tag">Core</span></div>
+    <div class="feat-card"><div class="feat-icon">🤖</div><h3 class="feat-title">AI Money Advisor</h3><p class="feat-desc">Get personalised suggestions based on your spending. Finly's AI spots patterns and warns you before you overspend.</p><span class="feat-tag ai">✦ AI Powered</span></div>
+    <div class="feat-card"><div class="feat-icon">🎯</div><h3 class="feat-title">Budget Goals</h3><p class="feat-desc">Set monthly limits per category. Get alerts before you hit the ceiling. Celebrate when you stay under — that's a real win.</p><span class="feat-tag">Core</span></div>
+    <div class="feat-card"><div class="feat-icon">📈</div><h3 class="feat-title">Savings Planner</h3><p class="feat-desc">Set a goal — laptop, Goa trip, emergency fund — and get a week-by-week savings plan aligned to your scholarship dates.</p><span class="feat-tag ai">✦ AI Powered</span></div>
+    <div class="feat-card"><div class="feat-icon">💡</div><h3 class="feat-title">Smart Insights</h3><p class="feat-desc">Weekly and monthly financial health reports. Compare anonymously with other students at your college. Know where you stand.</p><span class="feat-tag">Analytics</span></div>
+    <div class="feat-card"><div class="feat-icon">🔔</div><h3 class="feat-title">Smart Reminders</h3><p class="feat-desc">Never miss mess fee, hostel payment, or subscription. Finly tracks recurring payments and reminds you before they hit.</p><span class="feat-tag">Automation</span></div>
+  </div>
+</section>
+
+<!-- AI -->
+<section class="ai-sec reveal" id="ai">
+  <div class="ai-layout">
+    <div class="ai-text">
+      <p class="s-lbl">Meet Your AI Advisor</p>
+      <h2 class="s-title" style="text-align:left;margin-left:0">A finance coach that <span class="hl">gets student life</span></h2>
+      <p class="s-sub" style="text-align:left;margin-left:0;margin-bottom:2rem">Ask anything. Get advice designed for your reality — not some 40-year-old's investment portfolio.</p>
+      <div class="ai-pts">
+        <div class="ai-pt"><span class="ai-pt-ico">🔍</span><div><div class="ai-pt-ttl">Spending Pattern Detection</div><div class="ai-pt-dsc">AI notices you're ordering Zomato 5× a week and offers a smarter plan before the month ends badly.</div></div></div>
+        <div class="ai-pt"><span class="ai-pt-ico">📅</span><div><div class="ai-pt-ttl">Scholarship-Aware Planning</div><div class="ai-pt-dsc">Knows your scholarship dates and helps you stretch money evenly instead of blowing it all in week one.</div></div></div>
+        <div class="ai-pt"><span class="ai-pt-ico">🎓</span><div><div class="ai-pt-ttl">Student Context Built-In</div><div class="ai-pt-dsc">Understands hostel rent, mess fees, exam seasons, and internship pay. Advice that fits your actual life.</div></div></div>
+      </div>
+    </div>
+    <div class="chat-box">
+      <div class="chat-hdr">
+        <div class="chat-ico">🤖</div>
+        <div><div class="chat-aname">Finly AI</div><div class="chat-stat"><span class="chat-dot"></span> Always available</div></div>
+      </div>
+      <div class="bbl bbl-u"><div class="bt">Why am I always broke by the 20th?</div></div>
+      <div class="bbl bbl-a"><div class="bt">Looking at your last 3 months — you spend <strong>62% of your budget in the first 12 days</strong>. Biggest culprits: food (₹1,800 avg) and impulse shopping right after scholarship credit. Want me to set up a week-wise limit? 🎯</div></div>
+      <div class="bbl bbl-u"><div class="bt">Yes! How much should I save this month?</div></div>
+      <div class="bbl bbl-a"><div class="bt">With ₹6,500 scholarship and fixed costs of ₹3,000, you have <strong>₹3,500 discretionary</strong>. Saving ₹700 (20%) is very realistic. I'll nudge you if you're going off-plan 👍</div></div>
+      <div class="chat-inp-row">
+        <input class="chat-inp" type="text" placeholder="Ask Finly anything...">
+        <button class="chat-send">↑</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section reveal" id="how">
+  <p class="s-lbl">Setup in Minutes</p>
+  <h2 class="s-title">Three steps to <span class="hl">total clarity</span></h2>
+  <p class="s-sub">No complex onboarding. No bank linking required. Open and start.</p>
+  <div class="steps-wrap">
+    <div class="step-i"><div class="step-c"><span>👤</span><span class="step-n">1</span></div><h3 class="step-ttl">Create Your Profile</h3><p class="step-dsc">Sign up with your college email. Set your monthly budget and income source — scholarship, stipend, or pocket money.</p></div>
+    <div class="step-i"><div class="step-c"><span>📝</span><span class="step-n">2</span></div><h3 class="step-ttl">Log Your Expenses</h3><p class="step-dsc">Add expenses manually or via quick-entry. Finly auto-tags categories so you spend less time tracking and more time living.</p></div>
+    <div class="step-i"><div class="step-c"><span>✨</span><span class="step-n">3</span></div><h3 class="step-ttl">Let AI Do the Rest</h3><p class="step-dsc">Get weekly reports, AI nudges, and alerts. Watch your financial habits improve — and savings actually grow.</p></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS — CENTER MODE SLIDER -->
+<section class="testi-section reveal" id="reviews">
+  <p class="s-lbl">Student Reviews</p>
+  <h2 class="s-title">Real students, <span class="hl">real results</span></h2>
+  <p class="s-sub" style="margin-bottom:2.5rem">From broke by the 20th to savings goals — here's what students say.</p>
+  <div class="testi-slider-wrap">
+    <div class="testi-track" id="testiTrack">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-txt">"The AI caught that I was spending ₹2,400/month on Swiggy and I had no idea. Switched to cooking 3 days a week and saved ₹900 in the first month."</p>
+        <div class="testi-auth"><div class="testi-av">RK</div><div><div class="testi-name">Rahul K.</div><div class="testi-col">IIT Bombay · CSE 3rd Year</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-txt">"I finally saved enough for Manali. Finly literally gave me a 4-month week-by-week plan. No other app has done that for a student budget before."</p>
+        <div class="testi-auth"><div class="testi-av">PS</div><div><div class="testi-name">Priya S.</div><div class="testi-col">NIT Trichy · ECE 2nd Year</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-txt">"The dashboard is genuinely beautiful — I actually open it daily now. AI nudges feel like a friend reminding you, not a bank lecturing you."</p>
+        <div class="testi-auth"><div class="testi-av">AM</div><div><div class="testi-name">Aditya M.</div><div class="testi-col">BITS Pilani · Mech 2nd Year</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-txt">"Set my first savings goal ever — a ₹15,000 laptop fund. Hit it in 3 months. Finly showed me I was wasting ₹600/month on subscriptions I forgot about."</p>
+        <div class="testi-auth"><div class="testi-av">NK</div><div><div class="testi-name">Neha K.</div><div class="testi-col">VIT Vellore · IT 3rd Year</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-txt">"I was skeptical at first but the scholarship-aware budgeting is real. It knows I get paid on the 5th and plans the whole month around that. Game changer."</p>
+        <div class="testi-auth"><div class="testi-av">SR</div><div><div class="testi-name">Siddharth R.</div><div class="testi-col">DTU Delhi · EE Final Year</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-txt">"Never thought I'd enjoy tracking money. The weekly summaries are satisfying like a game — seeing the green bars grow actually motivates me to spend less."</p>
+        <div class="testi-auth"><div class="testi-av">TJ</div><div><div class="testi-name">Tanvi J.</div><div class="testi-col">IET DAVV · CS 1st Year</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-txt">"The AI asked me why I spent ₹800 in one evening and I genuinely didn't remember. It was auto-rickshaws over 2 weeks. Switched to the college bus. Saving ₹400/month now."</p>
+        <div class="testi-auth"><div class="testi-av">VB</div><div><div class="testi-name">Vikram B.</div><div class="testi-col">SGSITS Indore · ME 2nd Year</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="testi-dots" id="testiDots"></div>
+</section>
+
+<!-- HELP CENTER BANNER -->
+<div class="help-banner reveal">
+  <div class="help-inner">
+    <div class="help-left">
+      <div class="help-icon-wrap">💬</div>
+      <div>
+        <div class="help-title">Need help getting started?</div>
+        <div class="help-sub">Guides, FAQs, and tips — everything you need to make the most of Finly.</div>
+      </div>
+    </div>
+    <div class="help-links">
+      <div class="help-link-pill" onclick="window.location.href='help-center.html'">📖 Getting Started</div>
+      <div class="help-link-pill" onclick="window.location.href='help-center.html'">🤖 AI Advisor Guide</div>
+      <div class="help-link-pill" onclick="window.location.href='help-center.html'">❓ FAQs</div>
+    </div>
+    <button class="btn-help" onclick="window.location.href='help-center.html'">Visit Help Center →</button>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-sec reveal" id="pricing">
+  <div class="cta-box">
+    <h2>Start building better<br>money habits today</h2>
+    <p>Free forever for students. No hidden fees, no credit card, no complicated setup. Just you, your budget, and an AI that actually gets student life.</p>
+    <div class="cta-acts">
+      <button class="btn-hero" onclick="openModal('signup')">🚀 Get Started</button>
+      <button class="btn-ghost-hero" onclick="openModal('login')">Already have an account</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-top">
+    <div>
+      <div class="f-brand-name">
+        <div class="logo-icon" style="width:28px;height:28px;">
+          <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;">
+            <rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/>
+            <rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/>
+            <rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/>
+            <path d="M14 10 L18 6 M18 6 L15.5 6 M18 6 L18 8.5" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        finly
+      </div>
+      <p class="f-brand-desc">AI-powered finance tracker for Indian college students. Know your money. Build your savings.</p>
+    </div>
+    <div>
+      <div class="f-col-ttl">Product</div>
+      <ul class="f-links">
+        <li><a href="features.html">Features</a></li>
+        <li><a href="#ai">AI Advisor</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="changelog.html">Changelog</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="f-col-ttl">Company</div>
+      <ul class="f-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="careers.html">Careers</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="f-col-ttl">Legal</div>
+      <ul class="f-links">
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms of Use</a></li>
+        <li><a href="security.html">Security</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="f-btm">
+    <span>© 2026 Finly Technologies Pvt. Ltd. Made with ❤️ for students.</span>
+    <span>Built by an IET DAVV student 🎓</span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modalOv" onclick="handleOvClick(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-logo-row">
+      <div class="modal-logo-ic">
+        <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;">
+          <rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/>
+          <rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/>
+          <rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/>
+        </svg>
+      </div>
+      <span class="modal-logo-nm">finly</span>
+    </div>
+    <p class="modal-sub">Your AI-powered student finance companion</p>
+    <div class="tab-row">
+      <button class="m-tab" id="tab-login" onclick="switchTab('login')">Log In</button>
+      <button class="m-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+    <!-- LOGIN -->
+    <div class="tab-panel" id="panel-login">
+      <div class="fg"><label class="fl">College Email</label><input type="email" class="fi" placeholder="you@college.edu.in"></div>
+      <div class="fg"><label class="fl">Password</label><input type="password" class="fi" placeholder="••••••••"></div>
+      <button class="fsub" onclick="goToDashboard()">Log In to Finly →</button>
+      <div class="for"><span>or</span></div>
+      <p class="ffoot">No account? <a onclick="switchTab('signup')">Sign up</a></p>
+    </div>
+    <!-- SIGNUP -->
+    <div class="tab-panel" id="panel-signup">
+      <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="First name"></div>
+      <div class="fg"><label class="fl">College Email</label><input type="email" class="fi" placeholder="you@college.edu.in"></div>
+      <div class="fg"><label class="fl">Monthly Budget (₹)</label><input type="number" class="fi" placeholder="e.g. 6500"></div>
+      <div class="fg"><label class="fl">Password</label><input type="password" class="fi" placeholder="Min 8 characters"></div>
+      <button class="fsub" onclick="goToDashboard()">Create Account 🚀</button>
+      <div class="for"><span>or</span></div>
+      <p class="ffoot">Already have an account? <a onclick="switchTab('login')">Log in</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// Modal
+function openModal(t){document.getElementById('modalOv').classList.add('open');switchTab(t||'login');document.body.style.overflow='hidden';}
+function closeModal(){document.getElementById('modalOv').classList.remove('open');document.body.style.overflow='';}
+function handleOvClick(e){if(e.target===document.getElementById('modalOv'))closeModal();}
+function switchTab(t){['login','signup'].forEach(s=>{document.getElementById('tab-'+s).classList.toggle('active',s===t);document.getElementById('panel-'+s).classList.toggle('active',s===t);});}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+function goToDashboard(){window.location.href='dashboard.html';}
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Navbar
+window.addEventListener('scroll',()=>{document.getElementById('navbar').style.background=window.scrollY>40?'rgba(4,9,18,.97)':'rgba(6,13,26,.82)';});
+
+// Testimonial center-mode slider
+const reviews = document.querySelectorAll('.testi-card');
+const track = document.getElementById('testiTrack');
+const dotsContainer = document.getElementById('testiDots');
+let current = 0;
+let autoTimer;
+
+// Build dots
+reviews.forEach((_,i)=>{
+  const d = document.createElement('div');
+  d.className = 'testi-dot' + (i===0?' active':'');
+  d.addEventListener('click',()=>goTo(i));
+  dotsContainer.appendChild(d);
+});
+
+function getCardWidth(){
+  const c = reviews[0];
+  const style = getComputedStyle(c);
+  return c.offsetWidth + parseFloat(style.marginRight) + 18; // 18 = gap
+}
+
+function goTo(idx){
+  current = ((idx % reviews.length) + reviews.length) % reviews.length;
+  
+  reviews.forEach((c,i)=>{
+    c.classList.remove('active','adjacent');
+    const diff = Math.abs(i - current);
+    const wrapDiff = Math.min(diff, reviews.length - diff);
+    if(wrapDiff === 0) c.classList.add('active');
+    else if(wrapDiff === 1) c.classList.add('adjacent');
+  });
+
+  // Center the active card
+  const sliderWrap = document.querySelector('.testi-slider-wrap');
+  const wrapWidth = sliderWrap.offsetWidth;
+  const cardWidth = reviews[0].offsetWidth;
+  const gap = 18;
+  const totalWidth = reviews.length * (cardWidth + gap);
+  let offset = current * (cardWidth + gap) - (wrapWidth / 2) + (cardWidth / 2);
+  offset = Math.max(0, Math.min(offset, totalWidth - wrapWidth));
+  track.style.transform = `translateX(-${offset}px)`;
+
+  // Update dots
+  document.querySelectorAll('.testi-dot').forEach((d,i)=>{
+    d.classList.toggle('active', i===current);
+  });
+}
+
+function autoSlide(){
+  autoTimer = setInterval(()=> goTo(current+1), 2000);
+}
+
+// Init
+function initSlider(){
+  const wrapWidth = document.querySelector('.testi-slider-wrap').offsetWidth;
+  track.style.paddingLeft = ((wrapWidth - reviews[0].offsetWidth) / 2) + 'px';
+  track.style.paddingRight = ((wrapWidth - reviews[0].offsetWidth) / 2) + 'px';
+  goTo(0);
+  autoSlide();
+}
+
+// Pause on hover
+document.querySelector('.testi-slider-wrap').addEventListener('mouseenter',()=>clearInterval(autoTimer));
+document.querySelector('.testi-slider-wrap').addEventListener('mouseleave',()=>{clearInterval(autoTimer);autoSlide();});
+
+window.addEventListener('load', initSlider);
+window.addEventListener('resize', ()=>goTo(current));
+</script>
+</body>
+</html>

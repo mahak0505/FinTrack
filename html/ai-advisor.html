@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Advisor — Finly</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  .app-layout { height: 100vh; overflow: hidden; display: flex; }
+  .main-content { overflow: hidden; display: flex; flex-direction: column; padding: 1.5rem; height: calc(100vh - 60px); }
+  
+  .chat-container { flex: 1; overflow-y: auto; background: var(--white-04); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 1rem; scroll-behavior: smooth;}
+  .msg-row { display: flex; width: 100%; }
+  .msg-row.user { justify-content: flex-end; }
+  
+  .msg { max-width: 80%; padding: 1rem 1.2rem; font-size: .88rem; line-height: 1.6; position: relative; }
+  .msg.user { background: var(--blue-mid); color: white; border-radius: 12px 12px 0 12px; }
+  .msg.ai { background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2); box-shadow: 0 4px 20px rgba(0,0,0,0.1); color: var(--text); border-radius: 12px 12px 12px 0; }
+  
+  .msg.ai h1, .msg.ai h2, .msg.ai h3 { font-family: 'Sora', sans-serif; margin-bottom: .8rem; margin-top: 1rem;}
+  .msg.ai h3:first-child { margin-top: 0; }
+  .msg.ai p { margin-bottom: .8rem; }
+  .msg.ai ul, .msg.ai ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+  .msg.ai li { margin-bottom: .3rem; }
+  .msg.ai code { background: rgba(0,0,0,.3); padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+  
+  .chat-input-row { display: flex; gap: 1rem; background: var(--blue-dark); padding: 12px; border: 1px solid var(--border-subtle); border-radius: 12px; }
+  .chat-inp { flex: 1; background: transparent; border: none; color: white; font-family: 'Plus Jakarta Sans', sans-serif; font-size: .95rem; outline: none; }
+  .chat-btn { background: var(--gradient-blue); border: none; border-radius: 8px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s; flex-shrink: 0; }
+  .chat-btn:hover { opacity: .9; transform: scale(1.05); }
+
+  .setup-overlay { position: absolute; inset:0; background: rgba(6,13,26,.95); backdrop-filter: blur(10px); z-index: 50; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; border-radius: 16px; padding: 2rem;}
+  
+  .typing-indicator { display: flex; gap: 4px; padding: 4px; }
+  .typing-dot { width: 6px; height: 6px; background: rgba(16,185,129,.5); border-radius: 50%; animation: type 1.4s infinite ease-in-out both; }
+  .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+  .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+  @keyframes type { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="dashboard.html" class="tb-logo"><div class="logo-icon"><svg viewBox="0 0 22 22" fill="none" style="width:17px;height:17px;"><rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/><rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/><rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/><path d="M14 10 L18 6 M18 6 L15.5 6 M18 6 L18 8.5" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="logo-name">fin<span>ly</span></span></a>
+  <div class="tb-right">
+    <div class="tb-notif" onclick="document.getElementById('notifDropdown').classList.toggle('active'); event.stopPropagation();">🔔<div class="notif-badge"></div><div class="dropdown" id="notifDropdown" onclick="event.stopPropagation()"></div></div>
+    <a href="profile.html" class="tb-av" style="text-decoration:none; color:inherit;">AZ</a>
+  </div>
+</div>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sb-profile">
+      <div class="sb-av">AZ</div><div><div class="sb-name">Ansh Zamde</div><div class="sb-college">IET DAVV · Address</div></div>
+    </div>
+    <div class="sb-section">Main</div>
+    <a href="dashboard.html" class="sb-item"><span class="sb-item-ico">📊</span> Dashboard</a>
+    <a href="expenses.html" class="sb-item"><span class="sb-item-ico">💳</span> Expenses</a>
+    <a href="budget-goals.html" class="sb-item"><span class="sb-item-ico">🎯</span> Budget Goals</a>
+    <a href="savings.html" class="sb-item"><span class="sb-item-ico">💰</span> Savings</a>
+    <div class="sb-section">Intelligence</div>
+    <a href="ai-advisor.html" class="sb-item active"><span class="sb-item-ico">🤖</span> AI Advisor <span class="sb-badge">NEW</span></a>
+    <a href="analytics.html" class="sb-item"><span class="sb-item-ico">📈</span> Analytics</a>
+    <a href="insights.html" class="sb-item"><span class="sb-item-ico">💡</span> Insights</a>
+    <div class="sb-section">Account</div>
+    <a href="settings.html" class="sb-item"><span class="sb-item-ico">⚙️</span> Settings</a>
+    <a href="help.html" class="sb-item"><span class="sb-item-ico">❓</span> Help</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-hdr" style="margin-bottom: 1rem;">
+      <div><div class="pg-title">AI Advisor 🤖</div><div class="pg-sub">Powered by Google Gemini</div></div>
+    </div>
+    
+    <div style="position:relative; flex:1; display:flex; flex-direction:column; overflow:hidden;">
+      <div id="setupOverlay" class="setup-overlay" style="display:none;">
+        <div style="font-size:3rem; margin-bottom:1rem;">🔑</div>
+        <h2 style="font-family:'Sora',sans-serif; margin-bottom:1rem;color:white;">API Key Required</h2>
+        <p style="color:var(--text-sub); max-width:400px; line-height:1.6; margin-bottom:1.5rem;">To use the AI Advisor for free, you need to provide your personal Google Gemini API Key.</p>
+        <a href="settings.html" class="btn-primary" style="text-decoration:none; display:inline-block; max-width: 200px;">Go to Settings →</a>
+      </div>
+
+      <div class="chat-container" id="chatBox">
+        <div class="msg-row">
+          <div class="msg ai">
+            <strong>Finly AI:</strong> Hello! I am your AI financial advisor using Google's Gemini models. You can ask me about your spending habits, how to save for your goals, or general financial advice! How can I help you today?
+          </div>
+        </div>
+      </div>
+      
+      <div class="chat-input-row">
+        <input type="text" class="chat-inp" id="chatInp" placeholder="Ask me something about your finances..." onkeypress="if(event.key === 'Enter') sendMsg()">
+        <button class="chat-btn" onclick="sendMsg()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/store.js"></script>
+<script>
+let apiKey = '';
+let chatHistory = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const p = Store.get('profile');
+  if(!p.geminiApiKey || p.geminiApiKey.trim() === '') {
+    document.getElementById('setupOverlay').style.display = 'flex';
+  } else {
+    apiKey = p.geminiApiKey.trim();
+  }
+});
+
+function appendMsg(text, isUser) {
+  const box = document.getElementById('chatBox');
+  const div = document.createElement('div');
+  div.className = `msg-row ${isUser ? 'user' : ''}`;
+  
+  const inner = document.createElement('div');
+  inner.className = `msg ${isUser ? 'user' : 'ai'}`;
+  
+  if(isUser) {
+    inner.textContent = text;
+  } else {
+    inner.innerHTML = marked.parse(text);
+  }
+  
+  div.appendChild(inner);
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function showTyping() {
+  const box = document.getElementById('chatBox');
+  const id = 'typing-' + Date.now();
+  box.insertAdjacentHTML('beforeend', `<div class="msg-row" id="${id}"><div class="msg ai"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`);
+  box.scrollTop = box.scrollHeight;
+  return id;
+}
+
+async function sendMsg() {
+  const inp = document.getElementById('chatInp');
+  const text = inp.value.trim();
+  if(!text || !apiKey) return;
+  
+  inp.value = '';
+  appendMsg(text, true);
+  
+  chatHistory.push({ role: 'user', parts: [{text: text}] });
+  
+  const typingId = showTyping();
+  
+  // Build system context from Store
+  const exps = Store.get('expenses');
+  const buds = Store.get('budgets');
+  const total = exps.reduce((a,c)=>a+c.amt,0);
+  
+  let sysPrompt = "System context: You are Finly AI, a highly intelligent and succinct financial advisor. Do not mention that you represent a system context. Be friendly. The user's name is " + Store.get('profile').name + ". ";
+  sysPrompt += `They have spent ₹${total} recently. Their budget limits are: ${JSON.stringify(buds)}. `;
+  sysPrompt += "Here is a brief history of their conversation:\n";
+  
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+    
+    // We send a single generic request with the context injected into the user's prompt
+    // (Using gemini-pro REST API structure directly)
+    const payload = {
+      contents: [{
+        role: "user",
+        parts: [{ text: sysPrompt + "\nUser asks: " + text }]
+      }]
+    };
+    
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    document.getElementById(typingId).remove();
+    
+    if(!res.ok) {
+      appendMsg("❌ **Error:** API Request failed. Make sure your API Key is valid and hasn't exceeded limits.", false);
+      return;
+    }
+    
+    const data = await res.json();
+    const reply = data.candidates[0]?.content?.parts[0]?.text || "I'm sorry, I couldn't generate a response.";
+    
+    chatHistory.push({ role: 'model', parts: [{text: reply}] });
+    appendMsg(reply, false);
+    
+  } catch (err) {
+    document.getElementById(typingId).remove();
+    appendMsg("❌ **Network Error:** Could not reach the AI servers.", false);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help & FAQ — Finly</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+<style>
+.faq-box { background: var(--white-04); border: 1px solid var(--border-subtle); padding: 1.5rem; border-radius: 14px; margin-bottom: 1rem;}
+.faq-q { font-weight: 600; color: var(--white); margin-bottom: 8px; font-family: 'Sora', sans-serif;}
+.faq-a { font-size: .85rem; color: var(--white-70); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="dashboard.html" class="tb-logo"><div class="logo-icon"><svg viewBox="0 0 22 22" fill="none" style="width:17px;height:17px;"><rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/><rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/><rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/><path d="M14 10 L18 6 M18 6 L15.5 6 M18 6 L18 8.5" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="logo-name">fin<span>ly</span></span></a>
+  <div class="tb-right">
+    <div class="tb-notif" onclick="document.getElementById('notifDropdown').classList.toggle('active'); event.stopPropagation();">🔔<div class="notif-badge"></div><div class="dropdown" id="notifDropdown" onclick="event.stopPropagation()"></div></div>
+    <a href="profile.html" class="tb-av" style="text-decoration:none; color:inherit;">AZ</a>
+  </div>
+</div>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sb-profile">
+      <div class="sb-av">AZ</div><div><div class="sb-name">Ansh Zamde</div><div class="sb-college">IET DAVV · Address</div></div>
+    </div>
+    <div class="sb-section">Main</div>
+    <a href="dashboard.html" class="sb-item"><span class="sb-item-ico">📊</span> Dashboard</a>
+    <a href="expenses.html" class="sb-item"><span class="sb-item-ico">💳</span> Expenses</a>
+    <a href="budget-goals.html" class="sb-item"><span class="sb-item-ico">🎯</span> Budget Goals</a>
+    <a href="savings.html" class="sb-item"><span class="sb-item-ico">💰</span> Savings</a>
+    <div class="sb-section">Intelligence</div>
+    <a href="ai-advisor.html" class="sb-item"><span class="sb-item-ico">🤖</span> AI Advisor <span class="sb-badge">NEW</span></a>
+    <a href="analytics.html" class="sb-item"><span class="sb-item-ico">📈</span> Analytics</a>
+    <a href="insights.html" class="sb-item"><span class="sb-item-ico">💡</span> Insights</a>
+    <div class="sb-section">Account</div>
+    <a href="settings.html" class="sb-item"><span class="sb-item-ico">⚙️</span> Settings</a>
+    <a href="help.html" class="sb-item active"><span class="sb-item-ico">❓</span> Help</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-hdr">
+      <div><div class="pg-title">Help & FAQ ❓</div><div class="pg-sub">How to use Finly effectively</div></div>
+    </div>
+    
+    <div style="max-width: 800px;">
+      <div class="faq-box">
+        <div class="faq-q">Where is my data stored?</div>
+        <div class="faq-a">Since this is a client-side application, all your financial transactions, goals, and settings are currently stored locally in your browser's <code>localStorage</code>. Clearing your browser cache may erase this data.</div>
+      </div>
+      <div class="faq-box">
+        <div class="faq-q">How does the AI Advisor work?</div>
+        <div class="faq-a">To use the AI Advisor, you must input your personal free <strong>Gemini API Key</strong> in the Settings page. Finly securely packages your spending data and sends it directly from your browser to Google servers to generate context-aware financial advice without intermediate servers.</div>
+      </div>
+      <div class="faq-box">
+        <div class="faq-q">Can I change my basic profile details like Address/UK?</div>
+        <div class="faq-a">Yes! Navigate to the <strong>Settings</strong> page to update your Full Name, College, and Location/Address. Once saved, these details will automatically update in your sidebar and your Topbar Profile dropdown on every page, just click your initials ("AZ") at the top right!</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/store.js"></script>
+</body>
+</html>

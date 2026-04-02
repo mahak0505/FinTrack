@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Finly</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="dashboard.html" class="tb-logo"><div class="logo-icon"><svg viewBox="0 0 22 22" fill="none" style="width:17px;height:17px;"><rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/><rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/><rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/><path d="M14 10 L18 6 M18 6 L15.5 6 M18 6 L18 8.5" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="logo-name">fin<span>ly</span></span></a>
+  <div class="tb-right">
+    <div class="tb-notif" onclick="document.getElementById('notifDropdown').classList.toggle('active'); event.stopPropagation();">🔔<div class="notif-badge"></div><div class="dropdown" id="notifDropdown" onclick="event.stopPropagation()"></div></div>
+    <a href="profile.html" class="tb-av" style="text-decoration:none; color:inherit;">AZ</a>
+  </div>
+</div>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sb-profile">
+      <div class="sb-av">AZ</div><div><div class="sb-name">Ansh Zamde</div><div class="sb-college">IET DAVV · Address</div></div>
+    </div>
+    <div class="sb-section">Main</div>
+    <a href="dashboard.html" class="sb-item"><span class="sb-item-ico">📊</span> Dashboard</a>
+    <a href="expenses.html" class="sb-item"><span class="sb-item-ico">💳</span> Expenses</a>
+    <a href="budget-goals.html" class="sb-item"><span class="sb-item-ico">🎯</span> Budget Goals</a>
+    <a href="savings.html" class="sb-item"><span class="sb-item-ico">💰</span> Savings</a>
+    <div class="sb-section">Intelligence</div>
+    <a href="ai-advisor.html" class="sb-item"><span class="sb-item-ico">🤖</span> AI Advisor <span class="sb-badge">NEW</span></a>
+    <a href="analytics.html" class="sb-item"><span class="sb-item-ico">📈</span> Analytics</a>
+    <a href="insights.html" class="sb-item"><span class="sb-item-ico">💡</span> Insights</a>
+    <div class="sb-section">Account</div>
+    <a href="settings.html" class="sb-item active"><span class="sb-item-ico">⚙️</span> Settings</a>
+    <a href="help.html" class="sb-item"><span class="sb-item-ico">❓</span> Help</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-hdr">
+      <div><div class="pg-title">Settings ⚙️</div><div class="pg-sub">Manage your profile and API integrations</div></div>
+    </div>
+    
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+      <div class="chart-card">
+        <div class="chart-hdr"><span class="chart-title">Personal Information</span></div>
+        <div class="frm-grp"><label class="frm-lbl">Full Name</label><input type="text" class="frm-inp" id="sName"></div>
+        <div class="frm-grp"><label class="frm-lbl">College/Work</label><input type="text" class="frm-inp" id="sCollege"></div>
+        <div class="frm-grp"><label class="frm-lbl">Location / Address</label><input type="text" class="frm-inp" id="sLoc"></div>
+        <button class="btn-primary" onclick="saveProfile()" id="sBtn1">Save Profile</button>
+      </div>
+      
+      <div class="chart-card">
+        <div class="chart-hdr"><span class="chart-title">AI Advisor Configuration</span></div>
+        <p style="font-size: .8rem; color:var(--text-sub); line-height:1.6; margin-bottom:1rem;">To use the AI Advisor for free, input your Google Gemini API Key. Your key is stored locally in your browser and never sent to our servers.</p>
+        <div class="frm-grp"><label class="frm-lbl">Gemini API Key</label><input type="password" class="frm-inp" id="sApiKey" placeholder="AIzaSy..."></div>
+        <button class="btn-primary" style="background:#10B981" onclick="saveApiKey()" id="sBtn2">Save API Key</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/store.js"></script>
+<script>
+function loadSettings() {
+  const p = Store.get('profile');
+  document.getElementById('sName').value = p.name;
+  document.getElementById('sCollege').value = p.college;
+  document.getElementById('sLoc').value = p.address;
+  document.getElementById('sApiKey').value = p.geminiApiKey || '';
+}
+
+function saveProfile() {
+  const p = Store.get('profile');
+  p.name = document.getElementById('sName').value;
+  let initials = p.name.split(' ');
+  p.initials = initials.length > 1 ? (initials[0][0] + initials[1][0]).toUpperCase() : p.name.substring(0,2).toUpperCase();
+  p.college = document.getElementById('sCollege').value;
+  p.address = document.getElementById('sLoc').value;
+  Store.set('profile', p);
+  
+  const b = document.getElementById('sBtn1'); b.textContent = 'Saved ✓';
+  setTimeout(() => { b.textContent = 'Save Profile'; window.location.reload(); }, 1000);
+}
+
+function saveApiKey() {
+  const p = Store.get('profile');
+  p.geminiApiKey = document.getElementById('sApiKey').value;
+  Store.set('profile', p);
+  
+  const b = document.getElementById('sBtn2'); b.textContent = 'Key Saved ✓';
+  setTimeout(() => { b.textContent = 'Save API Key'; }, 2000);
+}
+
+document.addEventListener('DOMContentLoaded', loadSettings);
+</script>
+</body>
+</html>

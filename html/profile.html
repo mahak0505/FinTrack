@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — Finly</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="dashboard.html" class="tb-logo"><div class="logo-icon"><svg viewBox="0 0 22 22" fill="none" style="width:17px;height:17px;"><rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/><rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/><rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/><path d="M14 10 L18 6 M18 6 L15.5 6 M18 6 L18 8.5" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="logo-name">fin<span>ly</span></span></a>
+  <div class="tb-right">
+    <div class="tb-notif" onclick="document.getElementById('notifDropdown').classList.toggle('active'); event.stopPropagation();">🔔<div class="notif-badge"></div><div class="dropdown" id="notifDropdown" onclick="event.stopPropagation()"></div></div>
+    <a href="profile.html" class="tb-av" style="text-decoration:none; color:inherit;">AZ</a>
+  </div>
+</div>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sb-profile">
+      <div class="sb-av">AZ</div><div><div class="sb-name">Ansh Zamde</div><div class="sb-college">IET DAVV · Address</div></div>
+    </div>
+    <div class="sb-section">Main</div>
+    <a href="dashboard.html" class="sb-item"><span class="sb-item-ico">📊</span> Dashboard</a>
+    <a href="expenses.html" class="sb-item"><span class="sb-item-ico">💳</span> Expenses</a>
+    <a href="budget-goals.html" class="sb-item"><span class="sb-item-ico">🎯</span> Budget Goals</a>
+    <a href="savings.html" class="sb-item"><span class="sb-item-ico">💰</span> Savings</a>
+    <div class="sb-section">Intelligence</div>
+    <a href="ai-advisor.html" class="sb-item"><span class="sb-item-ico">🤖</span> AI Advisor <span class="sb-badge">NEW</span></a>
+    <a href="analytics.html" class="sb-item"><span class="sb-item-ico">📈</span> Analytics</a>
+    <a href="insights.html" class="sb-item"><span class="sb-item-ico">💡</span> Insights</a>
+    <div class="sb-section">Account</div>
+    <a href="settings.html" class="sb-item"><span class="sb-item-ico">⚙️</span> Settings</a>
+    <a href="help.html" class="sb-item"><span class="sb-item-ico">❓</span> Help</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-hdr">
+      <div><div class="pg-title">User Profile 👤</div><div class="pg-sub">Your basic account information</div></div>
+    </div>
+    
+    <div class="chart-card" style="max-width: 600px; display:flex; flex-direction:column; align-items:center; gap: 1.5rem; padding: 3rem; margin: 0 auto; margin-top: 2rem;">
+      <div id="pAv" style="width: 100px; height: 100px; background: var(--gradient-blue); border-radius: 30px; display:flex; align-items:center; justify-content:center; font-size: 2.5rem; font-weight:700; font-family:'Sora',sans-serif; box-shadow: 0 10px 30px rgba(37,99,235,0.4);">AZ</div>
+      <div style="text-align:center;">
+        <div id="pName" style="font-family:'Sora',sans-serif; font-size: 1.8rem; font-weight:700; color:var(--white); margin-bottom:12px;">Ansh Zamde</div>
+        <div style="font-size: .95rem; color:var(--text-sub); display:flex; align-items:center; justify-content:center; gap:12px;">
+          <span>🎓 <span id="pCol">IET DAVV</span></span>
+          <span>·</span>
+          <span>📍 <span id="pLoc">UK</span></span>
+        </div>
+      </div>
+      
+      <div style="width:100%; height:1px; background:var(--border-subtle); margin: 1.5rem 0;"></div>
+      
+      <div style="width:100%; display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; text-align:center;">
+        <div style="background:var(--white-04); border:1px solid var(--border-subtle); padding: 1.5rem; border-radius:16px;">
+          <div style="font-size: .75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;">Total Spent</div>
+          <div id="pExp" style="font-size: 1.5rem; font-weight:700; font-family:'Sora',sans-serif;">₹0</div>
+        </div>
+        <div style="background:var(--white-04); border:1px solid var(--border-subtle); padding: 1.5rem; border-radius:16px;">
+          <div style="font-size: .75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px;">Total Saved</div>
+          <div id="pSav" style="font-size: 1.5rem; font-weight:700; font-family:'Sora',sans-serif; color:var(--blue-sky);">₹0</div>
+        </div>
+      </div>
+      
+      <a href="settings.html" class="btn-primary" style="text-align:center; text-decoration:none; margin-top:1.5rem; width: 80%;">✏️ Edit Profile in Settings</a>
+    </div>
+  </main>
+</div>
+
+<script src="js/store.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const p = Store.get('profile');
+  document.getElementById('pAv').textContent = p.initials;
+  document.getElementById('pName').textContent = p.name;
+  document.getElementById('pCol').textContent = p.college;
+  document.getElementById('pLoc').textContent = p.address;
+  
+  const exps = Store.get('expenses');
+  const goals = Store.get('goals');
+  
+  const totExp = exps.reduce((a,c)=>a+c.amt,0);
+  const totSav = goals.reduce((a,c)=>a+c.current,0);
+  
+  document.getElementById('pExp').textContent = Store.formatMoney(totExp);
+  document.getElementById('pSav').textContent = Store.formatMoney(totSav);
+});
+</script>
+</body>
+</html>
