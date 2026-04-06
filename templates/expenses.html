@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +7,7 @@
 <title>Expenses — Finly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/shared.css">
+<link rel="stylesheet" href="{% static 'css/shared.css' %}">
 <style>
 .exp-list-container { background: var(--white-04); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 1.5rem; margin-top: 1rem; }
 .exp-hdr-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 80px; gap: 1rem; padding: 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-muted); font-size: .75rem; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
@@ -23,7 +24,7 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <a href="finly-landing.html" class="tb-logo">
+  <a href=" {% url 'dashboard' %}" class="tb-logo">
     <div class="logo-icon">
       <svg viewBox="0 0 22 22" fill="none" style="width:17px;height:17px;">
         <rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/>
@@ -39,7 +40,7 @@
       🔔<div class="notif-badge"></div>
       <div class="dropdown" id="notifDropdown" onclick="event.stopPropagation()"></div>
     </div>
-    <a href="profile.html" class="tb-av" style="text-decoration:none; color:inherit;">AZ</a>
+    <a href="{% url 'profile' %}" class="tb-av" style="text-decoration:none; color:inherit;">AZ</a>
   </div>
 </div>
 
@@ -51,17 +52,19 @@
       <div><div class="sb-name">Ansh Zamde</div><div class="sb-college">IET DAVV · Address</div></div>
     </div>
     <div class="sb-section">Main</div>
-    <a href="dashboard.html" class="sb-item"><span class="sb-item-ico">📊</span> Dashboard</a>
-    <a href="expenses.html" class="sb-item active"><span class="sb-item-ico">💳</span> Expenses</a>
-    <a href="budget-goals.html" class="sb-item"><span class="sb-item-ico">🎯</span> Budget Goals</a>
-    <a href="savings.html" class="sb-item"><span class="sb-item-ico">💰</span> Savings</a>
-    <div class="sb-section">Intelligence</div>
-    <a href="ai-advisor.html" class="sb-item"><span class="sb-item-ico">🤖</span> AI Advisor <span class="sb-badge">NEW</span></a>
-    <a href="analytics.html" class="sb-item"><span class="sb-item-ico">📈</span> Analytics</a>
-    <a href="insights.html" class="sb-item"><span class="sb-item-ico">💡</span> Insights</a>
-    <div class="sb-section">Account</div>
-    <a href="settings.html" class="sb-item"><span class="sb-item-ico">⚙️</span> Settings</a>
-    <a href="help.html" class="sb-item"><span class="sb-item-ico">❓</span> Help</a>
+     <a href="{% url 'dashboard' %}" class="sb-item">📊 Dashboard</a>
+<a href="{% url 'expenses' %}" class="sb-item">💳 Expenses</a>
+<a href="{% url 'budget_goals' %}" class="sb-item">🎯 Budget Goals</a>
+<a href="{% url 'savings' %}" class="sb-item">💰 Savings</a>
+
+<div class="sb-section">Intelligence</div>
+<a href="{% url 'ai_advisor' %}" class="sb-item">🤖 AI Advisor</a>
+<a href="{% url 'analytics' %}" class="sb-item">📈 Analytics</a>
+<a href="{% url 'insights' %}" class="sb-item">💡 Insights</a>
+
+<div class="sb-section">Account</div>
+<a href="{% url 'settings' %}" class="sb-item">⚙️ Settings</a>
+<a href="{% url 'help' %}" class="sb-item">❓ Help</a>
   </aside>
 
   <!-- MAIN CONTENT -->
@@ -131,7 +134,7 @@
   </div>
 </div>
 
-<script src="js/store.js"></script>
+<script src="{% static 'js/store.js' %}"></script>
 <script>
 function renderExpenses() {
   const exps = Store.get('expenses');

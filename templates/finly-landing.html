@@ -545,24 +545,47 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border-subtle);pad
       <button class="m-tab" id="tab-login" onclick="switchTab('login')">Log In</button>
       <button class="m-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
     </div>
-    <!-- LOGIN -->
-    <div class="tab-panel" id="panel-login">
-      <div class="fg"><label class="fl">College Email</label><input type="email" class="fi" placeholder="you@college.edu.in"></div>
-      <div class="fg"><label class="fl">Password</label><input type="password" class="fi" placeholder="••••••••"></div>
-      <button class="fsub" onclick="goToDashboard()">Log In to Finly →</button>
-      <div class="for"><span>or</span></div>
-      <p class="ffoot">No account? <a onclick="switchTab('signup')">Sign up</a></p>
-    </div>
-    <!-- SIGNUP -->
-    <div class="tab-panel" id="panel-signup">
-      <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="First name"></div>
-      <div class="fg"><label class="fl">College Email</label><input type="email" class="fi" placeholder="you@college.edu.in"></div>
-      <div class="fg"><label class="fl">Monthly Budget (₹)</label><input type="number" class="fi" placeholder="e.g. 6500"></div>
-      <div class="fg"><label class="fl">Password</label><input type="password" class="fi" placeholder="Min 8 characters"></div>
-      <button class="fsub" onclick="goToDashboard()">Create Account 🚀</button>
-      <div class="for"><span>or</span></div>
-      <p class="ffoot">Already have an account? <a onclick="switchTab('login')">Log in</a></p>
-    </div>
+     <div class="tab-panel" id="panel-login">
+    <form action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        <div class="fg">
+            <label class="fl">Username</label>
+            <input type="text" name="username" class="fi" placeholder="Your username" required>
+        </div>
+        <div class="fg">
+            <label class="fl">Password</label>
+            <input type="password" name="password" class="fi" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="fsub">Log In to Finly →</button>
+    </form>
+    <div class="for"><span>or</span></div>
+    <p class="ffoot">No account? <a onclick="switchTab('signup')">Sign up</a></p>
+</div>
+
+<div class="tab-panel" id="panel-signup">
+    <form action="{% url 'signup' %}" method="POST">
+        {% csrf_token %}
+        <div class="fg">
+            <label class="fl">Username</label>
+            <input type="text" name="username" class="fi" placeholder="Pick a username" required>
+        </div>
+        <div class="fg">
+            <label class="fl">College Email</label>
+            <input type="email" name="email" class="fi" placeholder="you@college.edu.in" required>
+        </div>
+        <div class="fg">
+            <label class="fl">Password</label>
+            <input type="password" name="password" class="fi" placeholder="Min 8 characters" required>
+        </div>
+        <div class="fg">
+            <label class="fl">Confirm Password</label>
+            <input type="password" name="password2" class="fi" placeholder="Repeat password" required>
+        </div>
+        <button type="submit" class="fsub">Create Account 🚀</button>
+    </form>
+    <div class="for"><span>or</span></div>
+    <p class="ffoot">Already have an account? <a onclick="switchTab('login')">Log in</a></p>
+   </div>
   </div>
 </div>
 
@@ -573,7 +596,7 @@ function closeModal(){document.getElementById('modalOv').classList.remove('open'
 function handleOvClick(e){if(e.target===document.getElementById('modalOv'))closeModal();}
 function switchTab(t){['login','signup'].forEach(s=>{document.getElementById('tab-'+s).classList.toggle('active',s===t);document.getElementById('panel-'+s).classList.toggle('active',s===t);});}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
-function goToDashboard(){window.location.href='dashboard.html';}
+
 
 // Scroll reveal
 const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.1});
