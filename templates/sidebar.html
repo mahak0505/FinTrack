@@ -1,0 +1,70 @@
+{% load static %}
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="{% url 'dashboard' %}" class="tb-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 22 22" fill="none" style="width:17px;height:17px;">
+        <rect x="3" y="3" width="2.5" height="16" rx="1" fill="white"/>
+        <rect x="3" y="3" width="11" height="2.5" rx="1" fill="white"/>
+        <rect x="3" y="9.5" width="8" height="2.5" rx="1" fill="white"/>
+        <path d="M14 10 L18 6 M18 6 L15.5 6 M18 6 L18 8.5" stroke="rgba(255,255,255,0.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="logo-name">fin<span>ly</span></span>
+  </a>
+  <div class="tb-right">
+    <div class="tb-notif" onclick="document.getElementById('notifDropdown').classList.toggle('active'); event.stopPropagation();">
+      🔔<div class="notif-badge"></div>
+      <div class="dropdown" id="notifDropdown" onclick="event.stopPropagation()"></div>
+    </div>
+    <a href="{% url 'profile' %}" class="tb-av" style="text-decoration:none; color:inherit;">
+      {% if request.user.first_name and request.user.last_name %}
+        {{ request.user.first_name|slice:":1"|upper }}{{ request.user.last_name|slice:":1"|upper }}
+      {% else %}
+        {{ request.user.username|slice:":2"|upper }}
+      {% endif %}
+    </a>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-profile">
+    <div class="sb-av">
+      {% if request.user.first_name and request.user.last_name %}
+        {{ request.user.first_name|slice:":1"|upper }}{{ request.user.last_name|slice:":1"|upper }}
+      {% else %}
+        {{ request.user.username|slice:":2"|upper }}
+      {% endif %}
+    </div>
+    <div>
+      <div class="sb-name">
+        {% if request.user.first_name %}
+          {{ request.user.get_full_name }}
+        {% else %}
+          {{ request.user.username }}
+        {% endif %}
+      </div>
+      <div class="sb-college">{{ request.user.email|default:"IET DAVV" }}</div>
+    </div>
+  </div>
+
+  <div class="sb-section">Main</div>
+  <a href="{% url 'dashboard' %}"    class="sb-item {% if active_page == 'dashboard' %}active{% endif %}"><span class="sb-item-ico">📊</span> Dashboard</a>
+  <a href="{% url 'expenses' %}"     class="sb-item {% if active_page == 'expenses' %}active{% endif %}"><span class="sb-item-ico">💳</span> Expenses</a>
+  <a href="{% url 'budget_goals' %}" class="sb-item {% if active_page == 'budget_goals' %}active{% endif %}"><span class="sb-item-ico">🎯</span> Budget Goals</a>
+  <a href="{% url 'savings' %}"      class="sb-item {% if active_page == 'savings' %}active{% endif %}"><span class="sb-item-ico">💰</span> Savings</a>
+
+  <div class="sb-section">Intelligence</div>
+  <a href="{% url 'ai_advisor' %}"  class="sb-item {% if active_page == 'ai_advisor' %}active{% endif %}"><span class="sb-item-ico">🤖</span> AI Advisor <span class="sb-badge">NEW</span></a>
+  <a href="{% url 'analytics' %}"   class="sb-item {% if active_page == 'analytics' %}active{% endif %}"><span class="sb-item-ico">📈</span> Analytics</a>
+  <a href="{% url 'insights' %}"    class="sb-item {% if active_page == 'insights' %}active{% endif %}"><span class="sb-item-ico">💡</span> Insights</a>
+
+  <div class="sb-section">Account</div>
+  <a href="{% url 'settings' %}" class="sb-item {% if active_page == 'settings' %}active{% endif %}"><span class="sb-item-ico">⚙️</span> Settings</a>
+  <a href="{% url 'help' %}"     class="sb-item {% if active_page == 'help' %}active{% endif %}"><span class="sb-item-ico">❓</span> Help</a>
+  <a href="{% url 'logout' %}"   class="sb-item" style="color:#ef4444; margin-top:10px;">
+    <span class="sb-item-ico">🚪</span> Logout
+  </a>
+</aside>
