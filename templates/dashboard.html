@@ -56,6 +56,11 @@
    <div class="sb-section">Account</div>
    <a href="{% url 'settings' %}" class="sb-item"><span class="sb-item-ico">⚙️</span> Settings</a>
    <a href="{% url 'help' %}" class="sb-item"><span class="sb-item-ico">❓</span> Help</a>
+   <!-- AFTER (fixed) -->
+<a href="{% url 'logout' %}" class="sb-item" style="color: #ef4444; margin-top: 10px;">
+  <span class="sb-item-ico">🚪</span> Logout
+</a>
+</aside>
   </aside>
 
   <!-- MAIN CONTENT -->
@@ -64,7 +69,7 @@
     <!-- Header -->
     <div class="page-hdr">
       <div>
-        <div class="pg-title">Good morning, Ansh 👋</div>
+        <div class="pg-title">Welcome,Ansh 👋</div>
         <div class="pg-sub">Here's your financial overview for this month</div>
       </div>
       <div class="pg-date" id="currentDate">March 30, 2026</div>
