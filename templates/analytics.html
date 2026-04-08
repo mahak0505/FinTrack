@@ -35,29 +35,23 @@
   </main>
 </div>
 
-<script src="{% static 'js/store.js' %}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const exps = Store.get('expenses').sort((a,b) => new Date(a.date) - new Date(b.date));
-  
   Chart.defaults.color = 'rgba(255,255,255,0.7)';
   Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
 
-  // Prep Line Data
-  const dateMap = {};
-  exps.forEach(e => {
-    const d = new Date(e.date).toLocaleDateString();
-    dateMap[d] = (dateMap[d] || 0) + e.amt;
-  });
-  
+  // Native Django payloads
+  const lineLabels = {{ monthly_labels|safe }};
+  const lineData = {{ monthly_data|safe }};
+
   const ctx1 = document.getElementById('lineChart');
   new Chart(ctx1, {
     type: 'line',
     data: {
-      labels: Object.keys(dateMap),
+      labels: lineLabels,
       datasets: [{
         label: 'Expenses (₹)',
-        data: Object.values(dateMap),
+        data: lineData,
         borderColor: '#3B82F6',
         backgroundColor: 'rgba(59,130,246,0.1)',
         borderWidth: 3,
@@ -74,18 +68,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Prep Pie Data
-  const catMap = {};
-  exps.forEach(e => { catMap[e.cat] = (catMap[e.cat] || 0) + e.amt; });
+  // Pie Chart Generation
+  const pieLabels = [{% for cat in by_category %}"{{ cat.category }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+  const pieData = [{% for cat in by_category %}{{ cat.total }}{% if not forloop.last %},{% endif %}{% endfor %}];
   const bgColors = ['#3B82F6', '#10B981', '#F59E0B', '#A78BFA', '#F87171', '#14B8A6'];
   
   const ctx2 = document.getElementById('pieChart');
   new Chart(ctx2, {
     type: 'doughnut',
     data: {
-      labels: Object.keys(catMap),
+      labels: pieLabels,
       datasets: [{
-        data: Object.values(catMap),
+        data: pieData,
         backgroundColor: bgColors,
         borderWidth: 0
       }]

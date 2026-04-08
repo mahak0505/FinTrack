@@ -41,15 +41,15 @@
     <div class="stat-row" style="grid-template-columns: repeat(3, 1fr);">
       <div class="stat-card">
         <div class="stat-lbl">Total Expenses</div>
-        <div class="stat-val" id="stat-total">₹0</div>
+        <div class="stat-val" id="stat-total">₹{{ total }}</div>
       </div>
       <div class="stat-card">
         <div class="stat-lbl">Top Category</div>
-        <div class="stat-val" id="stat-topcat" style="font-size: 1.2rem; transform: translateY(4px);">-</div>
+        <div class="stat-val" id="stat-topcat" style="font-size: 1.2rem; transform: translateY(4px);">{{ top_cat }}</div>
       </div>
       <div class="stat-card">
         <div class="stat-lbl">Monthly Average</div>
-        <div class="stat-val" id="stat-avg">₹0</div>
+        <div class="stat-val" id="stat-avg">₹{{ monthly_avg }}</div>
       </div>
     </div>
 
@@ -62,7 +62,33 @@
         <div>Action</div>
       </div>
       <div id="fullTxnList">
-        <!-- Rendered by JS -->
+        {% for e in expenses %}
+        <div class="exp-row">
+          <div class="exp-name">
+            <div class="exp-ico">
+              {% if e.category == 'Food' %}🍔
+              {% elif e.category == 'Travel' %}🚌
+              {% elif e.category == 'Books' %}📚
+              {% elif e.category == 'Health' %}🏥
+              {% elif e.category == 'Fun' %}🎮
+              {% elif e.category == 'Accommodation' %}🏠
+              {% else %}💸{% endif %}
+            </div>
+            <span>{{ e.title|default:'Unnamed' }}</span>
+          </div>
+          <div style="font-size:.8rem; color:var(--text-sub);">{{ e.category }}</div>
+          <div style="font-size:.8rem; color:var(--text-sub);">{{ e.date|date:"j M Y" }}</div>
+          <div style="font-weight:600; font-family:'Sora',sans-serif;">₹{{ e.amount }}</div>
+          <div>
+            <form method="POST" action="{% url 'delete_expense' e.id %}" style="margin:0;">
+              {% csrf_token %}
+              <button type="submit" class="exp-del">Delete</button>
+            </form>
+          </div>
+        </div>
+        {% empty %}
+        <div class="no-data" style="padding: 2rem; text-align: center; color: var(--text-muted);">No expenses recorded yet.</div>
+        {% endfor %}
       </div>
     </div>
 
@@ -76,79 +102,29 @@
       <div class="modal-title">New Expense</div>
       <button class="modal-close" onclick="closeModals()">×</button>
     </div>
-    <div class="frm-grp">
-      <label class="frm-lbl">Description</label>
-      <input type="text" class="frm-inp" id="aeDesc" placeholder="e.g. Swiggy Order">
-    </div>
-    <div class="frm-grp">
-      <label class="frm-lbl">Category</label>
-      <select class="frm-inp" id="aeCat" style="color:var(--blue-deep)">
-        <option>Food</option><option>Travel</option><option>Books</option><option>Accommodation</option><option>Health</option><option>Fun</option><option>Other</option>
-      </select>
-    </div>
-    <div class="frm-grp">
-      <label class="frm-lbl">Amount (₹)</label>
-      <input type="number" class="frm-inp" id="aeAmt" placeholder="e.g. 350">
-    </div>
-    <button class="btn-primary" onclick="saveNewExpense()">Add Expense</button>
+    <form method="POST" action="{% url 'expenses' %}">
+      {% csrf_token %}
+      <div class="frm-grp">
+        <label class="frm-lbl">Description</label>
+        <input type="text" class="frm-inp" name="title" id="aeDesc" placeholder="e.g. Swiggy Order" required>
+      </div>
+      <div class="frm-grp">
+        <label class="frm-lbl">Category</label>
+        <select class="frm-inp" name="category" id="aeCat" style="color:var(--blue-deep)">
+          <option>Food</option><option>Travel</option><option>Books</option><option>Accommodation</option><option>Health</option><option>Fun</option><option>Other</option>
+        </select>
+      </div>
+      <div class="frm-grp">
+        <label class="frm-lbl">Amount (₹)</label>
+        <input type="number" class="frm-inp" name="amount" id="aeAmt" placeholder="e.g. 350" required>
+      </div>
+      <button type="submit" class="btn-primary">Add Expense</button>
+    </form>
   </div>
 </div>
   <script src="{% static 'js/store.js' %}"></script>  
 <script>
-function renderExpenses() {
-  const exps = Store.get('expenses');
-  
-  // Stats
-  const total = exps.reduce((acc, curr) => acc + curr.amt, 0);
-  document.getElementById('stat-total').textContent = Store.formatMoney(total);
-  document.getElementById('stat-avg').textContent = Store.formatMoney(Math.round(total / (new Date().getDate() || 1)));
-  
-  const catTotals = {};
-  exps.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + e.amt; });
-  const topCat = Object.keys(catTotals).sort((a,b)=>catTotals[b]-catTotals[a])[0] || '-';
-  document.getElementById('stat-topcat').textContent = topCat;
-
-  // List
-  const listEl = document.getElementById('fullTxnList');
-  let html = '';
-  exps.forEach(e => {
-    let ico = '💸'; 
-    if(e.cat==='Food') ico='🍔'; if(e.cat==='Travel') ico='🚌'; if(e.cat==='Books') ico='📚'; if(e.cat==='Health') ico='🏥'; if(e.cat==='Fun') ico='🎮'; if(e.cat==='Accommodation') ico='🏠';
-    const d = new Date(e.date).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
-    html += `
-      <div class="exp-row">
-        <div class="exp-name"><div class="exp-ico">${ico}</div><span>${e.name || 'Unnamed'}</span></div>
-        <div style="font-size:.8rem; color:var(--text-sub);">${e.cat}</div>
-        <div style="font-size:.8rem; color:var(--text-sub);">${d}</div>
-        <div style="font-weight:600; font-family:'Sora',sans-serif;">₹${e.amt}</div>
-        <div><button class="exp-del" onclick="deleteExpense('${e.id}')">Delete</button></div>
-      </div>
-    `;
-  });
-  listEl.innerHTML = html || '<div class="no-data">No expenses recorded yet.</div>';
-}
-
-function deleteExpense(id) {
-  let exps = Store.get('expenses');
-  exps = exps.filter(e => e.id !== id);
-  Store.set('expenses', exps);
-  renderExpenses();
-}
-
-function saveNewExpense() {
-  const desc = document.getElementById('aeDesc').value;
-  const cat = document.getElementById('aeCat').value;
-  const amt = document.getElementById('aeAmt').value;
-  if(!desc || !amt) return alert('Please enter description and amount');
-  
-  Store.addExpense(desc, cat, amt, '');
-  closeModals();
-  document.getElementById('aeDesc').value = '';
-  document.getElementById('aeAmt').value = '';
-  renderExpenses();
-}
-
-document.addEventListener('DOMContentLoaded', renderExpenses);
+// All rendering logic moved directly to native Django templates
 </script>
 </body>
 </html>

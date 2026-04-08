@@ -23,78 +23,53 @@
       <div>
         <div class="chart-card">
           <div class="chart-hdr"><span class="chart-title">Current Spending against Limits</span></div>
-          <div id="budgetBars" style="display:flex; flex-direction:column; gap:1.5rem;"></div>
+          <div id="budgetBars" style="display:flex; flex-direction:column; gap:1.5rem;">
+            {% for bd in budget_data %}
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:.85rem;">
+                <strong style="color:var(--white)">{{ bd.budget.category }}</strong>
+                <span style="color:var(--text-sub)">₹{{ bd.spent }} / ₹{{ bd.budget.limit }}</span>
+                <form method="POST" action="{% url 'delete_budget' bd.budget.id %}" style="display:inline; margin:0; padding:0;">
+                  {% csrf_token %}
+                  <button type="submit" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:.7rem; margin-left:10px;">Remove</button>
+                </form>
+              </div>
+              <div style="height:8px; background:var(--white-08); border-radius:10px; overflow:hidden;">
+                <div style="height:100%; width:{% if bd.percent > 100 %}100{% else %}{{ bd.percent }}{% endif %}%; 
+                            background:{% if bd.percent >= 100 %}var(--danger){% elif bd.percent > 80 %}var(--warn){% else %}var(--blue-sky){% endif %}; 
+                            border-radius:10px;"></div>
+              </div>
+            </div>
+            {% empty %}
+            <div class="no-data">No budget limits defined yet.</div>
+            {% endfor %}
+          </div>
         </div>
       </div>
       
       <div class="quick-add">
-        <div class="qa-title">Update Limit</div>
-        <div class="frm-grp">
-          <label class="frm-lbl">Category</label>
-          <select class="frm-inp" id="catUpd" style="color:var(--blue-deep)">
-            <option>Food</option><option>Travel</option><option>Books</option><option>Accommodation</option><option>Health</option><option>Fun</option><option>Other</option>
-          </select>
-        </div>
-        <div class="frm-grp">
-          <label class="frm-lbl">New Limit (₹)</label>
-          <input type="number" class="frm-inp" id="limitUpd" placeholder="e.g. 5000">
-        </div>
-        <button class="btn-primary" onclick="updateLimit()">Save Limit</button>
+        <form method="POST" action="{% url 'budget_goals' %}">
+          {% csrf_token %}
+          <div class="qa-title">Update Limit</div>
+          <div class="frm-grp">
+            <label class="frm-lbl">Category</label>
+            <select class="frm-inp" name="category" id="catUpd" style="color:var(--blue-deep)">
+              <option>Food</option><option>Travel</option><option>Books</option><option>Accommodation</option><option>Health</option><option>Fun</option><option>Other</option>
+            </select>
+          </div>
+          <div class="frm-grp">
+            <label class="frm-lbl">New Limit (₹)</label>
+            <input type="number" class="frm-inp" name="limit" id="limitUpd" placeholder="e.g. 5000" required>
+          </div>
+          <button type="submit" class="btn-primary">Save Limit</button>
+        </form>
       </div>
     </div>
   </main>
 </div>
 
-<script src="{% static 'js/store.js' %}"></script><script>
-function renderBudgets() {
-  const buds = Store.get('budgets');
-  const exps = Store.get('expenses');
-  
-  const catTotals = {};
-  exps.forEach(e => { catTotals[e.cat] = (catTotals[e.cat] || 0) + e.amt; });
-  
-  const cont = document.getElementById('budgetBars');
-  let html = '';
-  
-  Object.keys(buds).forEach(cat => {
-    const limit = buds[cat];
-    const spent = catTotals[cat] || 0;
-    const pct = limit > 0 ? Math.min(100, Math.round((spent / limit) * 100)) : 0;
-    
-    let color = 'var(--blue-sky)';
-    if(pct > 80) color = 'var(--warn)';
-    if(pct >= 100) color = 'var(--danger)';
-    
-    html += `
-      <div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:.85rem;">
-          <strong style="color:var(--white)">${cat}</strong>
-          <span style="color:var(--text-sub)">₹${spent} / ₹${limit}</span>
-        </div>
-        <div style="height:8px; background:var(--white-08); border-radius:10px; overflow:hidden;">
-          <div style="height:100%; width:${pct}%; background:${color}; border-radius:10px;"></div>
-        </div>
-      </div>
-    `;
-  });
-  cont.innerHTML = html;
-}
-
-function updateLimit() {
-  const cat = document.getElementById('catUpd').value;
-  const val = document.getElementById('limitUpd').value;
-  if(val) {
-    Store.updateBudget(cat, val);
-    renderBudgets();
-    document.getElementById('limitUpd').value = '';
-    
-    const btn = document.querySelector('.btn-primary');
-    btn.textContent = 'Saved ✓';
-    setTimeout(()=>btn.textContent = 'Save Limit', 2000);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', renderBudgets);
+<script>
+// Logic migrated to backend rendering.
 </script>
 </body>
 </html>

@@ -177,7 +177,6 @@ def expenses_view(request):
             user=user, title=title, amount=amount,
             category=category, date=date, note=note
         )
-        messages.success(request, 'Expense added!')
         return redirect('expenses')
 
     category_filter = request.GET.get('category', '')
@@ -200,9 +199,18 @@ def expenses_view(request):
         'category', flat=True
     ).distinct()
 
+    top_cat = expenses.values('category').annotate(CatTotal=Sum('amount')).order_by('-CatTotal').first()
+    top_cat_name = top_cat['category'] if top_cat else '-'
+
+    import datetime
+    days_in_month = datetime.date.today().day or 1
+    monthly_avg = round(float(total) / days_in_month) if total else 0
+
     context = {
         'expenses'        : expenses,
         'total'           : total,
+        'top_cat'         : top_cat_name,
+        'monthly_avg'     : monthly_avg,
         'categories'      : categories,
         'category_filter' : category_filter,
         'month_filter'    : month_filter,
@@ -215,7 +223,6 @@ def expenses_view(request):
 def delete_expense(request, expense_id):
     expense = get_object_or_404(Expense, id=expense_id, user=request.user)
     expense.delete()
-    messages.success(request, 'Expense deleted.')
     return redirect('expenses')
 
 
@@ -229,7 +236,6 @@ def edit_expense(request, expense_id):
         expense.date     = request.POST.get('date')
         expense.note     = request.POST.get('note', '')
         expense.save()
-        messages.success(request, 'Expense updated!')
     return redirect('expenses')
 
 
@@ -249,7 +255,6 @@ def budget_goals_view(request):
             user=user, category=category, month=first_day,
             defaults={'limit': limit}
         )
-        messages.success(request, 'Budget saved!')
         return redirect('budget_goals')
 
     budgets = Budget.objects.filter(user=user, month=first_day)
@@ -278,7 +283,6 @@ def budget_goals_view(request):
 def delete_budget(request, budget_id):
     budget = get_object_or_404(Budget, id=budget_id, user=request.user)
     budget.delete()
-    messages.success(request, 'Budget deleted.')
     return redirect('budget_goals')
 
 
@@ -301,9 +305,9 @@ def savings_view(request):
             try:
                 target_val = Decimal(target) if target else Decimal('0')
                 SavingsGoal.objects.create(user=user, name=name, target=target_val, icon=icon)
-                messages.success(request, 'Goal created!')
             except (InvalidOperation, ValueError):
                 messages.error(request, 'Invalid target amount.')
+            return redirect('savings')
 
         elif action == 'add_funds':
             goal_id = request.POST.get('goal_id')
@@ -318,17 +322,15 @@ def savings_view(request):
                     # Both values are now Decimals, so addition works perfectly
                     goal.saved = min(goal.saved + amount, goal.target)
                     goal.save()
-                    messages.success(request, f'₹{amount} added to {goal.name}!')
                 except (InvalidOperation, ValueError):
                     messages.error(request, 'Please enter a valid numeric amount.')
+            return redirect('savings')
 
         elif action == 'delete':
             goal_id = request.POST.get('goal_id')
             goal = get_object_or_404(SavingsGoal, id=goal_id, user=user)
             goal.delete()
-            messages.success(request, 'Goal deleted.')
-
-        return redirect('savings')
+            return redirect('savings')
 
     # GET request logic
     goals = SavingsGoal.objects.filter(user=user)
